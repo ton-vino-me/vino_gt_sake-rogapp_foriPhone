@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="酒ログ">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="description" content="飲んだ日本酒を写真と感想で記録するアプリ">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="sakerog_icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>酒ログ - 日本酒記録</title>
+</head>
+<body>
+  <!-- ========== ヘッダー ========== -->
+  <header class="app-header">
+    <button class="data-mgmt-btn" id="data-mgmt-btn">データ引継ぎ</button>
+  </header>
+  <div class="app-title-area">
+    <h1 class="app-title">🍓 酒ログ 🦋<span class="app-subtitle">飲んだお酒🍶の記録帳</span></h1>
+  </div>
+
+  <!-- ========== タブ切り替え ========== -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="form" id="tab-form">
+      <span class="tab-icon">✏️</span>
+      <span class="tab-label">新規登録</span>
+    </button>
+    <button class="tab-btn" data-tab="list" id="tab-list">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">記録一覧</span>
+    </button>
+  </nav>
+
+  <!-- ========== 新規登録画面 ========== -->
+  <main class="screen active" id="screen-form">
+    <form id="sake-form" autocomplete="off">
+
+      <!-- 酒名 -->
+      <section class="form-section">
+        <label class="form-label" for="sake-name">
+          <span class="label-icon">🏷️</span> 銘柄名
+        </label>
+        <input type="text" id="sake-name" class="form-input" placeholder="例：獺祭 純米大吟醸" required>
+      </section>
+
+      <!-- 写真アップロード -->
+      <section class="form-section">
+        <label class="form-label">
+          <span class="label-icon">📸</span> 写真（最大5枚）
+        </label>
+        <div class="photo-area">
+          <div class="photo-grid" id="photo-grid">
+            <!-- 写真プレビューがここに追加される -->
+          </div>
+          <label class="photo-add-btn" id="photo-add-btn">
+            <input type="file" accept="image/*" multiple id="photo-input" hidden>
+            <span class="add-icon">＋</span>
+            <span class="add-text">写真を追加</span>
+          </label>
+        </div>
+        <p class="photo-count" id="photo-count">0 / 5 枚</p>
+      </section>
+
+      <!-- 温度選択 -->
+      <section class="form-section">
+        <label class="form-label">
+          <span class="label-icon">🌡️</span> 飲み方
+        </label>
+        <div class="temp-group" id="temp-group">
+          <button type="button" class="temp-btn" data-value="冷酒">
+            <span class="temp-emoji">🧊</span>
+            <span>冷酒</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="常温">
+            <span class="temp-emoji">🍶</span>
+            <span>常温</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="ぬる燗">
+            <span class="temp-emoji">♨️</span>
+            <span>ぬる燗</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="熱燗">
+            <span class="temp-emoji">🔥</span>
+            <span>熱燗</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 味の感想タグ -->
+      <section class="form-section">
+        <label class="form-label">
+          <span class="label-icon">👅</span> 味の感想（複数選択可）
+        </label>
+        <div class="taste-tags" id="taste-tags">
+          <label class="taste-tag">
+            <input type="checkbox" value="甘口" hidden>
+            <span class="tag-chip">🍯 甘口</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="辛口" hidden>
+            <span class="tag-chip">🌶️ 辛口</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="さわやか" hidden>
+            <span class="tag-chip">🍃 さわやか</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="微発泡" hidden>
+            <span class="tag-chip">🫧 微発泡</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="飲みやすい" hidden>
+            <span class="tag-chip">😊 飲みやすい</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="とろみあり" hidden>
+            <span class="tag-chip">🫗 とろみあり</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="フルーティー" hidden>
+            <span class="tag-chip">🍑 フルーティー</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="濃厚" hidden>
+            <span class="tag-chip">🍷 濃厚</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="すっきり" hidden>
+            <span class="tag-chip">💎 すっきり</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="華やか" hidden>
+            <span class="tag-chip">🌸 華やか</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="アルコール強め" hidden>
+            <span class="tag-chip">💪 アルコール強め</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="まろやか" hidden>
+            <span class="tag-chip">🌕 まろやか</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="さっぱり" hidden>
+            <span class="tag-chip">💦 さっぱり</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="酸味" hidden>
+            <span class="tag-chip">🍋 酸味</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="苦味" hidden>
+            <span class="tag-chip">☕ 苦味</span>
+          </label>
+          <label class="taste-tag">
+            <input type="checkbox" value="芳醇" hidden>
+            <span class="tag-chip">🍇 芳醇</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- 一言メモ -->
+      <section class="form-section">
+        <label class="form-label" for="memo">
+          <span class="label-icon">📝</span> 一言メモ
+        </label>
+        <textarea id="memo" class="form-textarea" placeholder="例：友人との花見で飲んだ一杯。香りが最高！" rows="3"></textarea>
+      </section>
+
+      <!-- 飲んだお店URL -->
+      <section class="form-section">
+        <label class="form-label" for="sake-url">
+          <span class="label-icon">🔗</span> 飲んだお店のURL <span style="font-size: 0.75rem; color: var(--text-muted);">(任意)</span>
+        </label>
+        <input type="url" id="sake-url" class="form-input" placeholder="https://...">
+      </section>
+
+      <!-- 記録日 -->
+      <section class="form-section">
+        <label class="form-label" for="record-date">
+          <span class="label-icon">📅</span> 記録日
+        </label>
+        <input type="date" id="record-date" class="form-input">
+      </section>
+
+      <!-- 特別タグ -->
+      <section class="form-section fav-section">
+        <label class="form-label"><span class="label-icon">✨</span> 特別タグ</label>
+        <div class="special-tags-group">
+          <button type="button" class="special-toggle" id="fav-toggle">
+            <span class="special-icon" id="fav-heart">🤍</span>
+            <span class="special-text">また飲みたい</span>
+          </button>
+          <button type="button" class="special-toggle" id="sakura-toggle">
+            <span class="special-icon disable-emoji" id="sakura-icon">🌸</span>
+            <span class="special-text">桜関連</span>
+          </button>
+          <button type="button" class="special-toggle" id="yamaguchi-toggle">
+            <span class="special-icon disable-emoji" id="yamaguchi-icon">🐡</span>
+            <span class="special-text">山口のお酒</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 保存ボタン -->
+      <button type="submit" class="save-btn" id="save-btn">
+        <span class="save-icon">💾</span> この記録を保存する
+      </button>
+    </form>
+  </main>
+
+  <!-- ========== 記録一覧画面 ========== -->
+  <main class="screen" id="screen-list">
+    <!-- フィルターバー -->
+    <div class="filter-bar">
+      <div class="filter-row">
+        <select class="filter-select" id="filter-year">
+          <option value="">すべての年</option>
+        </select>
+        <select class="filter-select" id="filter-month">
+          <option value="">すべての月</option>
+          <option value="1">1月</option>
+          <option value="2">2月</option>
+          <option value="3">3月</option>
+          <option value="4">4月</option>
+          <option value="5">5月</option>
+          <option value="6">6月</option>
+          <option value="7">7月</option>
+          <option value="8">8月</option>
+          <option value="9">9月</option>
+          <option value="10">10月</option>
+          <option value="11">11月</option>
+          <option value="12">12月</option>
+        </select>
+        <div class="filter-specials">
+          <button class="filter-special-btn" id="filter-fav" title="お気に入りだけ表示">
+            <span id="filter-fav-icon">🤍</span>
+          </button>
+          <button class="filter-special-btn inactive" id="filter-sakura" title="桜関連だけ表示">
+            <span class="disable-emoji">🌸</span>
+          </button>
+          <button class="filter-special-btn inactive" id="filter-yamaguchi" title="山口のお酒だけ表示">
+            <span class="disable-emoji">🐡</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-header">
+      <p class="record-count" id="record-count">0件の記録</p>
+    </div>
+
+    <!-- 年別アコーディオンがここに表示される -->
+    <div id="accordion-container"></div>
+
+    <div class="empty-state" id="empty-state">
+      <span class="empty-icon">🍓🦋</span>
+      <p class="empty-text">まだ記録がありません</p>
+      <p class="empty-sub">「新規登録」から最初の一杯を記録しましょう</p>
+    </div>
+  </main>
+
+  <!-- ========== 詳細モーダル ========== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="detail-modal">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-content" id="modal-content">
+        <!-- 詳細がここに表示される -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== データ管理モーダル ========== -->
+  <div class="modal-overlay" id="data-modal-overlay">
+    <div class="modal" id="data-modal">
+      <button class="modal-close" id="data-modal-close">✕</button>
+      <div class="modal-content">
+        <h2 style="margin-bottom:1.2rem;">📦 データ管理</h2>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">機種変更時はエクスポートしたファイルを新しい端末でインポートしてください。</p>
+        <button class="save-btn" id="export-btn" style="margin-bottom:1rem;">
+          <span>📤</span> データをエクスポート
+        </button>
+        <label class="save-btn" style="background:var(--surface);color:var(--text);border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+          <input type="file" accept=".json" id="import-input" hidden>
+          <span>📥</span> データをインポート
+        </label>
+
+        <button class="guide-toggle-btn" id="guide-toggle-btn">📱 機種変更の流れを見る</button>
+        <div class="guide-steps" id="guide-steps">
+          <ol>
+            <li>旧iPhoneでこのアプリを開き「📤 データをエクスポート」をタップ</li>
+            <li>「酒ログ_バックアップ_2026-04-06.json」のような名前のファイルが「ファイル」アプリのダウンロードフォルダに保存される</li>
+            <li>iCloud Driveが有効なら新iPhoneでも同じファイルにアクセス可能<br><span>（無効の場合はAirDropで旧iPhoneから新iPhoneへ送る）</span></li>
+            <li>新iPhoneでアプリを開き「📥 データをインポート」をタップ</li>
+            <li>ファイルアプリからエクスポートしたJSONファイルを選択</li>
+            <li>確認ダイアログで「OK」を押せば引き継ぎ完了</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== トースト通知 ========== -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "酒ログ - 日本酒記録",
+  "short_name": "酒ログ",
+  "description": "飲んだ日本酒を写真と感想で記録するアプリ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f0ff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "sakerog_icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
