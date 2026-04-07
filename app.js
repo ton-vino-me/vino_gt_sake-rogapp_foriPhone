@@ -423,7 +423,7 @@
       ${r.temp ? `<div class="modal-section"><p class="modal-section-title">飲み方</p><span class="modal-temp">${getTempEmoji(r.temp)} ${r.temp}</span></div>` : ''}
       ${r.tags && r.tags.length > 0 ? `<div class="modal-section"><p class="modal-section-title">味の感想</p><div class="modal-tags">${(r.tags || []).map(t => `<span class="modal-tag">${getTasteLabel(t)}</span>`).join('')}</div></div>` : ''}
       ${r.memo ? `<div class="modal-section"><p class="modal-section-title">メモ</p><p class="modal-memo">${escapeHtml(r.memo)}</p></div>` : ''}
-      ${r.url ? `<div class="modal-section"><p class="modal-section-title">飲んだお店</p><a href="${escapeHtml(r.url)}" target="_blank" style="color: var(--blue); font-size: 0.85rem; text-decoration: underline; word-break: break-all;">${escapeHtml(r.url)}</a></div>` : ''}
+      ${r.url ? `<div class="modal-section"><p class="modal-section-title">関連リンク（飲んだお店など）</p><a href="${escapeHtml(r.url)}" target="_blank" style="color: var(--blue); font-size: 0.85rem; text-decoration: underline; word-break: break-all;">${escapeHtml(r.url)}</a></div>` : ''}
       <div class="modal-actions">
         <button class="modal-delete-btn" id="modal-delete">🗑 削除</button>
         <button class="modal-edit-btn" id="modal-edit">✏️ 編集</button>
@@ -540,6 +540,18 @@
       if (!('serviceWorker' in navigator)) return;
 
       navigator.serviceWorker.register('./sw.js').then(reg => {
+        // 手動更新チェックボタン
+        const checkUpdateBtn = document.getElementById('check-update-btn');
+        if (checkUpdateBtn) {
+          checkUpdateBtn.addEventListener('click', () => {
+            reg.update().then(() => {
+              showToast('🔍 サーバーを確認しました');
+            }).catch(() => {
+              showToast('⚠️ 確認に失敗しました');
+            });
+          });
+        }
+
         // 新しいSWが見つかった場合
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
