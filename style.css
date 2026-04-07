@@ -755,13 +755,15 @@ input[type="date"] {
 
 .carousel-track {
   display: flex;
+  width: 100%;
   height: 100%;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   touch-action: pan-y;
 }
 
 .carousel-slide {
-  min-width: 100%;
+  flex: 0 0 100%;
+  width: 100%;
   height: 100%;
   aspect-ratio: 3 / 4;
   background: rgba(99, 102, 241, 0.04);
