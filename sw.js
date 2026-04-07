@@ -4,7 +4,7 @@
    バージョンを変更することで、全ユーザーの更新を促せます
    ======================================== */
 
-const CACHE_NAME = 'sake-log-cache-v1.0.2';
+const CACHE_NAME = 'sake-log-cache-v1.0.4';
 const ASSETS = [
   './',
   './index.html',
@@ -22,10 +22,10 @@ self.addEventListener('install', (event) => {
       return cache.addAll(ASSETS);
     })
   );
-  self.skipWaiting(); // 新しいSWをすぐに有効化
+  // self.skipWaiting() を削除：ユーザーのボタン操作を待つ
 });
 
-// 古いキャッシュを削除
+// キャッシュのクリーンアップ
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -39,7 +39,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
 });
 
 // フェッチ（ネットワークまたはキャッシュから取得）

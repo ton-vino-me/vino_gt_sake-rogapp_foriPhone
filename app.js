@@ -555,13 +555,15 @@
       const updateNotify = document.getElementById('update-notify');
       if (updateNotify) {
         updateNotify.addEventListener('click', () => {
-          navigator.serviceWorker.getRegistration().then(reg => {
-            if (reg && reg.waiting) {
-              reg.waiting.postMessage('skipWaiting');
-            } else {
-              window.location.reload();
-            }
-          });
+          if (confirm('新しいバージョンがあります。更新しますか？')) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg && reg.waiting) {
+                reg.waiting.postMessage('skipWaiting');
+              } else {
+                window.location.reload();
+              }
+            });
+          }
         });
       }
 
