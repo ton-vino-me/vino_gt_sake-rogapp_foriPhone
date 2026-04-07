@@ -792,7 +792,6 @@ input[type="date"] {
 .carousel-track {
   display: flex;
   height: 100%;
-  touch-action: pan-y;
 }
 
 .carousel-slide {

@@ -365,7 +365,11 @@
         if (!r) return;
         r[prop] = !r[prop];
         updateRecord(r.id, r);
-        if (type === 'fav') btn.textContent = r.favorite ? '❤️' : '🤍';
+        if (type === 'fav') {
+          btn.textContent = '❤️';
+          btn.classList.toggle('on', r[prop]);
+          btn.classList.toggle('off', !r[prop]);
+        }
         else { btn.classList.toggle('on', r[prop]); btn.classList.toggle('off', !r[prop]); }
       });
     });
@@ -374,7 +378,7 @@
   function buildCard(r) {
     const specials = `
       <div class="card-specials">
-        <button class="card-s-btn" data-id="${r.id}" data-type="fav">${r.favorite ? '❤️' : '🤍'}</button>
+        <button class="card-s-btn ${r.favorite ? 'on' : 'off'}" data-id="${r.id}" data-type="fav">❤️</button>
         <button class="card-s-btn ${r.sakura ? 'on' : 'off'}" data-id="${r.id}" data-type="sakura">🌸</button>
         <button class="card-s-btn ${r.yamaguchi ? 'on' : 'off'}" data-id="${r.id}" data-type="yamaguchi">🐡</button>
       </div>`;
@@ -425,8 +429,6 @@
         <button class="modal-edit-btn" id="modal-edit">✏️ 編集</button>
       </div>`;
 
-    initCarousel();
-
     ['fav', 'sakura', 'yamaguchi'].forEach(type => {
       document.getElementById(`modal-${type}`).addEventListener('click', (e) => {
         const btn = e.currentTarget;
@@ -446,6 +448,11 @@
 
     modalOverlay.classList.add('show');
     document.body.style.overflow = 'hidden';
+
+    // 画面が表示（offsetWidthが確定）してから初期化
+    setTimeout(() => {
+      initCarousel();
+    }, 50);
   }
 
   // --- Carousel / Helpers ---
