@@ -21,6 +21,7 @@
   const photoAddBtn = document.getElementById('photo-add-btn');
   const photoCount = document.getElementById('photo-count');
   const tempGroup = document.getElementById('temp-group');
+  const ratingGroup = document.getElementById('rating-group');
   const memoEl = document.getElementById('memo');
   const sakeUrl = document.getElementById('sake-url');
   const recordDate = document.getElementById('record-date');
@@ -53,6 +54,7 @@
   // --- State ---
   let photos = [];
   let selectedTemp = '';
+  let selectedRating = 0;
   let editingId = null;
   let isFavorite = false;
   let isSakura = false;
@@ -89,6 +91,17 @@
         tempGroup.querySelectorAll('.temp-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         selectedTemp = btn.dataset.value;
+      });
+    });
+
+    // --- Rating Stars ---
+    ratingGroup.querySelectorAll('.rating-star').forEach(star => {
+      star.addEventListener('click', () => {
+        const value = parseInt(star.dataset.value);
+        selectedRating = value;
+        ratingGroup.querySelectorAll('.rating-star').forEach((s, i) => {
+          s.classList.toggle('active', i < value);
+        });
       });
     });
 
@@ -219,7 +232,7 @@
 
     if (editingId) {
       updateRecord(editingId, {
-        name, photos: [...photos], temp: selectedTemp, tags: tasteTags,
+        name, photos: [...photos], temp: selectedTemp, rating: selectedRating, tags: tasteTags,
         memo: memoEl.value.trim(), url: url, date: recordDate.value,
         favorite: isFavorite, sakura: isSakura, yamaguchi: isYamaguchi
       });
@@ -230,7 +243,7 @@
     } else {
       saveRecord({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name, photos: [...photos], temp: selectedTemp, tags: tasteTags,
+        name, photos: [...photos], temp: selectedTemp, rating: selectedRating, tags: tasteTags,
         memo: memoEl.value.trim(), url: url, date: recordDate.value,
         favorite: isFavorite, sakura: isSakura, yamaguchi: isYamaguchi, 
         createdAt: new Date().toISOString()
@@ -243,10 +256,11 @@
 
   function resetForm() {
     sakeForm.reset();
-    photos = []; selectedTemp = ''; editingId = null;
+    photos = []; selectedTemp = ''; selectedRating = 0; editingId = null;
     isFavorite = isSakura = isYamaguchi = false;
     renderPhotos();
     tempGroup.querySelectorAll('.temp-btn').forEach(b => b.classList.remove('selected'));
+    ratingGroup.querySelectorAll('.rating-star').forEach(s => s.classList.remove('active'));
     
     favHeart.textContent = '🤍';
     favToggle.classList.remove('active');
@@ -265,7 +279,9 @@
     sakeUrl.value = r.url || '';
     photos = [...(r.photos || [])]; renderPhotos();
     selectedTemp = r.temp || '';
+    selectedRating = r.rating || 0;
     tempGroup.querySelectorAll('.temp-btn').forEach(b => b.classList.toggle('selected', b.dataset.value === selectedTemp));
+    ratingGroup.querySelectorAll('.rating-star').forEach((s, i) => s.classList.toggle('active', i < selectedRating));
     document.querySelectorAll('#taste-tags input[type="checkbox"]').forEach(cb => cb.checked = (r.tags || []).includes(cb.value));
     memoEl.value = r.memo || '';
     recordDate.value = r.date || '';
@@ -388,12 +404,14 @@
          ${specials}</div>`
       : `<div class="card-photo-wrap card-photo-empty"><span class="card-photo-placeholder">🍶</span>${specials}</div>`;
 
+    const rating = r.rating ? `<div class="card-rating">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : '';
     const temp = r.temp ? `<span class="card-temp">${getTempEmoji(r.temp)} ${r.temp}</span>` : '';
     const tags = (r.tags || []).slice(0, 2).map(t => `<span class="card-tag">${t}</span>`).join('');
     const more = (r.tags || []).length > 2 ? `<span class="card-tag">+${r.tags.length - 2}</span>` : '';
 
     return `<div class="record-card" data-id="${r.id}">${photo}
       <div class="card-body"><h3 class="card-name">${escapeHtml(r.name)}</h3>
+      ${rating}
       <p class="card-date">${formatDateShort(r.date)}</p>
       <div class="card-meta">${temp}${tags}${more}</div></div></div>`;
   }
@@ -418,6 +436,7 @@
         <button class="modal-s-btn ${r.yamaguchi ? 'on' : 'off'}" id="modal-yamaguchi" data-id="${r.id}">🐡</button>
       </div>
       <h2 class="modal-name">${escapeHtml(r.name)}</h2>
+      ${r.rating ? `<div class="card-rating" style="margin-top:8px;">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : ''}
       <p class="modal-date">📅 ${formatDate(r.date)}</p>
       ${photosHtml}
       ${r.temp ? `<div class="modal-section"><p class="modal-section-title">飲み方</p><span class="modal-temp">${getTempEmoji(r.temp)} ${r.temp}</span></div>` : ''}

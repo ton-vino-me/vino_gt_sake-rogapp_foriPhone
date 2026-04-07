@@ -380,6 +380,50 @@ input[type="date"] {
   margin-top: 2px;
 }
 
+/* --- Rating Stars --- */
+.rating-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.rating-star {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: #e0e0e0;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  line-height: 1;
+}
+
+.rating-star:active {
+  transform: scale(1.2);
+}
+
+.rating-star.active[data-value="1"] {
+  color: #38bdf8;
+}
+
+.rating-star.active[data-value="2"] {
+  color: #60a5fa;
+}
+
+.rating-star.active[data-value="3"] {
+  color: #818cf8;
+}
+
+.rating-star.active[data-value="4"] {
+  color: #a78bfa;
+}
+
+.rating-star.active[data-value="5"] {
+  color: #a855f7;
+}
+
 /* --- Temperature Buttons --- */
 .temp-group {
   display: grid;
@@ -592,6 +636,38 @@ input[type="date"] {
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.card-rating {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.card-rating-star {
+  line-height: 1;
+}
+
+.card-rating-star[data-value="1"] {
+  color: #38bdf8;
+}
+
+.card-rating-star[data-value="2"] {
+  color: #60a5fa;
+}
+
+.card-rating-star[data-value="3"] {
+  color: #818cf8;
+}
+
+.card-rating-star[data-value="4"] {
+  color: #a78bfa;
+}
+
+.card-rating-star[data-value="5"] {
+  color: #a855f7;
 }
 
 .card-date {
