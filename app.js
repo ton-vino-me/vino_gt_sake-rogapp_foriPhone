@@ -539,28 +539,62 @@
     let isManualChecking = false;
     let checkUpdateTimeout = null;
 
+    // SWの登録と更新チェック
     function initServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
+
+      let isManualChecking = false;
+      let checkUpdateTimeout = null;
 
       navigator.serviceWorker.register('./sw.js').then(reg => {
         // 手動更新チェックボタン
         const checkUpdateBtn = document.getElementById('check-update-btn');
         if (checkUpdateBtn) {
           checkUpdateBtn.addEventListener('click', () => {
-            reg.update().then(() => {
-              showToast('🔍 サーバーを確認しました');
-            }).catch(() => {
-              showToast('⚠️ 確認に失敗しました');
+            if (reg.waiting) {
+              if (confirm('更新データがあります。このまま更新しますか？')) {
+                reg.waiting.postMessage('skipWaiting');
+              }
+              return;
+            }
+
+            isManualChecking = true;
+            showToast('🔍 サーバーをチェック中...');
+            
+            checkUpdateTimeout = setTimeout(() => {
+              if (isManualChecking) {
+                isManualChecking = false;
+                alert('現在更新データはありません');
+              }
+            }, 5000);
+
+            reg.update().catch(() => {
+              isManualChecking = false;
+              clearTimeout(checkUpdateTimeout);
+              showToast('⚠️ 通信エラーが発生しました');
             });
           });
         }
+
+        // 1時間おきに自動チェック（開きっぱなし対策）
+        setInterval(() => {
+          reg.update();
+        }, 1000 * 60 * 60);
 
         // 新しいSWが見つかった場合
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateNotify();
+              if (isManualChecking) {
+                isManualChecking = false;
+                clearTimeout(checkUpdateTimeout);
+                if (confirm('更新データがあります。このまま更新しますか？')) {
+                  newWorker.postMessage('skipWaiting');
+                }
+              } else {
+                showUpdateNotify();
+              }
             }
           });
         });
