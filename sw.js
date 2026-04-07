@@ -4,7 +4,7 @@
    バージョンを変更することで、全ユーザーの更新を促せます
    ======================================== */
 
-const CACHE_NAME = 'sake-log-cache-v1.0.4';
+const CACHE_NAME = 'sake-log-cache-v1.0.5';
 const ASSETS = [
   './',
   './index.html',
@@ -14,15 +14,21 @@ const ASSETS = [
   './sakerog_icon.png'
 ];
 
-// インストール時にファイルをキャッシュ
+// インストール時にファイルをキャッシュ（キャッシュを無視して常にサーバーから取得）
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('SW: Pre-caching assets');
-      return cache.addAll(ASSETS);
+      console.log('SW: Pre-caching assets from network');
+      return Promise.all(
+        ASSETS.map((url) => {
+          return fetch(url, { cache: 'reload' }).then((response) => {
+            if (!response.ok) throw new Error(`Fetch failed: ${url}`);
+            return cache.put(url, response);
+          });
+        })
+      );
     })
   );
-  // self.skipWaiting() を削除：ユーザーのボタン操作を待つ
 });
 
 // キャッシュのクリーンアップ
