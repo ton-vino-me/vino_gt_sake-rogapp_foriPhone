@@ -452,19 +452,20 @@
   function initCarousel() {
     const c = modalContent.querySelector('.carousel'); if (!c) return;
     const t = c.querySelector('.carousel-track'), tot = parseInt(c.dataset.total, 10); if (tot <= 1) return;
-    let cur = 0, startX = 0, diffX = 0, drag = false;
-    function goTo(idx) {
-      cur = Math.max(0, Math.min(tot - 1, idx));
-      t.style.transform = `translateX(-${cur * 100}%)`;
+    let cur = 0;
+    function updateUI(idx) {
+      cur = idx;
       c.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
       const cnt = c.querySelector('.carousel-counter'); if (cnt) cnt.textContent = `${cur + 1} / ${tot}`;
     }
-    t.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; drag = true; t.style.transition = 'none'; }, { passive: true });
-    t.addEventListener('touchmove', (e) => { if (!drag) return; diffX = e.touches[0].clientX - startX; t.style.transform = `translateX(${-(cur * 100) + (diffX / c.offsetWidth) * 100}%)`; }, { passive: true });
-    t.addEventListener('touchend', () => {
-      drag = false; t.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      if (Math.abs(diffX) > 50) goTo(diffX < 0 ? cur + 1 : cur - 1); else goTo(cur); diffX = 0;
-    });
+    c.addEventListener('scroll', () => {
+      const idx = Math.round(c.scrollLeft / c.offsetWidth);
+      if (idx !== cur) updateUI(idx);
+    }, { passive: true });
+    function goTo(idx) {
+      const targetIdx = Math.max(0, Math.min(tot - 1, idx));
+      c.scrollTo({ left: targetIdx * c.offsetWidth, behavior: 'smooth' });
+    }
     c.querySelectorAll('.carousel-dot').forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.index, 10))));
   }
 
@@ -522,5 +523,49 @@
   function formatDateShort(d) { if (!d) return ''; const [, m, day] = d.split('-'); return `${parseInt(m)}/${parseInt(day)}`; }
   function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
-  document.addEventListener('DOMContentLoaded', init);
-})();
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      initServiceWorker();
+    });
+
+    // --- Service Worker & Update Logic ---
+    function initServiceWorker() {
+      if (!('serviceWorker' in navigator)) return;
+
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        // 新しいSWが見つかった場合
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateNotify();
+            }
+          });
+        });
+      });
+
+      // 更新ボタン（ヘッダーのバッジ）のイベント
+      const updateNotify = document.getElementById('update-notify');
+      if (updateNotify) {
+        updateNotify.addEventListener('click', () => {
+          navigator.serviceWorker.getRegistration().then(reg => {
+            if (reg && reg.waiting) {
+              reg.waiting.postMessage('skipWaiting');
+            } else {
+              window.location.reload();
+            }
+          });
+        });
+      }
+
+      // SWが切り替わったらリロード
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+    }
+
+    function showUpdateNotify() {
+      const notify = document.getElementById('update-notify');
+      if (notify) notify.style.display = 'block';
+    }
+  })();
