@@ -460,7 +460,7 @@
       const cnt = c.querySelector('.carousel-counter'); if (cnt) cnt.textContent = `${cur + 1} / ${tot}`;
     }
     t.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; drag = true; t.style.transition = 'none'; }, { passive: true });
-    t.addEventListener('touchmove', (e) => { if (!drag) return; diffX = e.touches[0].clientX - startX; t.style.transform = `translateX(${-(cur * 100) + (diffX / t.offsetWidth) * 100}%)`; }, { passive: true });
+    t.addEventListener('touchmove', (e) => { if (!drag) return; diffX = e.touches[0].clientX - startX; t.style.transform = `translateX(${-(cur * 100) + (diffX / c.offsetWidth) * 100}%)`; }, { passive: true });
     t.addEventListener('touchend', () => {
       drag = false; t.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       if (Math.abs(diffX) > 50) goTo(diffX < 0 ? cur + 1 : cur - 1); else goTo(cur); diffX = 0;
