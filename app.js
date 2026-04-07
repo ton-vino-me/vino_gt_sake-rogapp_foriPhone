@@ -536,6 +536,9 @@
     });
 
     // --- Service Worker & Update Logic ---
+    let isManualChecking = false;
+    let checkUpdateTimeout = null;
+
     function initServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
 
