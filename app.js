@@ -53,8 +53,10 @@
   const filterKeyword = document.getElementById('filter-keyword');
   const filterExpandBtn = document.getElementById('filter-expand-btn');
   const advancedPanel = document.getElementById('advanced-filter-panel');
-  const yearChipsEl = document.getElementById('year-chips');
-  const monthChipsEl = document.getElementById('month-chips');
+  const yearAllBtn = document.getElementById('year-all-btn');
+  const yearSelect = document.getElementById('year-select');
+  const monthAllBtn = document.getElementById('month-all-btn');
+  const monthSelect = document.getElementById('month-select');
   const ratingFilterGroup = document.getElementById('filter-rating-group');
   const filterResetBtn = document.getElementById('filter-reset-btn');
   const searchSubmit = document.getElementById('search-submit');
@@ -169,14 +171,40 @@
       filterExpandBtn.classList.toggle('active', isOpen);
     });
 
-    monthChipsEl.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        monthChipsEl.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        selectedMonth = chip.dataset.month;
+    // --- Year / Month (Select + "All" button) ---
+    if (yearAllBtn && yearSelect) {
+      yearAllBtn.addEventListener('click', () => {
+        selectedYear = 'all';
+        yearAllBtn.classList.add('active');
+        yearSelect.value = '';
         renderList();
       });
-    });
+
+      yearSelect.addEventListener('change', () => {
+        const val = (yearSelect.value || '').trim();
+        if (!val) return;
+        selectedYear = val;
+        yearAllBtn.classList.remove('active');
+        renderList();
+      });
+    }
+
+    if (monthAllBtn && monthSelect) {
+      monthAllBtn.addEventListener('click', () => {
+        selectedMonth = 'all';
+        monthAllBtn.classList.add('active');
+        monthSelect.value = '';
+        renderList();
+      });
+
+      monthSelect.addEventListener('change', () => {
+        const val = (monthSelect.value || '').trim();
+        if (!val) return;
+        selectedMonth = val;
+        monthAllBtn.classList.remove('active');
+        renderList();
+      });
+    }
 
     ratingFilterGroup.querySelectorAll('.rating-filter-chip, .rating-star-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -205,7 +233,10 @@
       // Update UI
       advancedPanel.classList.remove('show');
       filterExpandBtn.classList.remove('active');
-      monthChipsEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.month === 'all'));
+      if (yearAllBtn) yearAllBtn.classList.add('active');
+      if (yearSelect) yearSelect.value = '';
+      if (monthAllBtn) monthAllBtn.classList.add('active');
+      if (monthSelect) monthSelect.value = '';
       ratingFilterGroup.querySelector('.rating-filter-chip').classList.add('active');
       ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach(s => s.classList.remove('active'));
       filterFavBtn.classList.remove('active');
@@ -411,19 +442,22 @@
   function renderList() {
     let records = getRecords();
 
-    // 1. Populate Year Chips (Advanced Filter)
+    // 1. Populate Year Select (Advanced Filter)
     const allRecords = getRecords();
     const years = [...new Set(allRecords.map(r => getYear(r.date)).filter(y => y))].sort((a,b) => b.localeCompare(a));
-    yearChipsEl.innerHTML = `<button class="chip ${selectedYear === 'all' ? 'active' : ''}" data-year="all">すべて</button>` + 
-      years.map(y => `<button class="chip ${y === selectedYear ? 'active' : ''}" data-year="${y}">${y}年</button>`).join('');
-    
-    // Add event listeners to year chips
-    yearChipsEl.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        selectedYear = chip.dataset.year;
-        renderList();
-      });
-    });
+    if (yearSelect && yearAllBtn) {
+      const prev = selectedYear === 'all' ? '' : selectedYear;
+      yearSelect.innerHTML =
+        `<option value="" ${selectedYear === 'all' ? 'selected' : ''}>選択…</option>` +
+        years.map(y => `<option value="${y}" ${y === prev ? 'selected' : ''}>${y}年</option>`).join('');
+      yearAllBtn.classList.toggle('active', selectedYear === 'all');
+    }
+
+    if (monthAllBtn && monthSelect) {
+      monthAllBtn.classList.toggle('active', selectedMonth === 'all');
+      if (selectedMonth === 'all') monthSelect.value = '';
+      else monthSelect.value = selectedMonth;
+    }
 
     // 2. Apply Filters
     const kw = filterKeyword.value.toLowerCase().trim();
