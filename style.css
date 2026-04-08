@@ -1176,7 +1176,7 @@ input[type="date"] {
   align-items: center;
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  background: linear-gradient(90deg, var(--blue), var(--purple));
   color: #fff;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
