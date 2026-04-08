@@ -185,7 +185,7 @@ body {
 }
 
 .tab-btn.active {
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  background: linear-gradient(90deg, var(--blue), var(--purple));
   border-color: transparent;
   color: #fff;
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
