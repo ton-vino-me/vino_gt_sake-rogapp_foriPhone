@@ -223,7 +223,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.1.9';
+        const currentVersion = 'v1.2.0';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -236,8 +236,6 @@
     });
 
     // --- Filters ---
-    filterYear.addEventListener('change', renderList);
-    filterMonth.addEventListener('change', renderList);
 
     filterFavBtn.addEventListener('click', () => {
       filterFavActive = !filterFavActive;
@@ -716,7 +714,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.1.9';
+      const currentVersion = 'v1.2.0';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {

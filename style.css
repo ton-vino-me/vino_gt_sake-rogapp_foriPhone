@@ -546,7 +546,7 @@ input[type="date"] {
 
 /* --- Record List (2列グリッド) --- */
 .list-header {
-  padding: 0 4px 6px;
+  padding: 0 4px 4px;
 }
 
 .record-count {
@@ -1100,7 +1100,7 @@ input[type="date"] {
 
 /* --- Filter Area (v1.1.7 刷新) --- */
 .filter-area {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .search-bar-row {
