@@ -69,8 +69,8 @@
       </section>
 
       <!-- 評価 -->
-      <section class="form-section">
-        <label class="form-label">
+      <section class="form-section" style="padding-bottom:12px;">
+        <label class="form-label" style="margin-bottom:4px;">
           <span class="label-icon">⭐</span> 評価
         </label>
         <div class="rating-group" id="rating-group">
@@ -79,31 +79,6 @@
           <button type="button" class="rating-star" data-value="3">★</button>
           <button type="button" class="rating-star" data-value="4">★</button>
           <button type="button" class="rating-star" data-value="5">★</button>
-        </div>
-      </section>
-
-      <!-- 温度選択 -->
-      <section class="form-section">
-        <label class="form-label">
-          <span class="label-icon">🌡️</span> 飲み方
-        </label>
-        <div class="temp-group" id="temp-group">
-          <button type="button" class="temp-btn" data-value="冷酒">
-            <span class="temp-emoji">🧊</span>
-            <span>冷酒</span>
-          </button>
-          <button type="button" class="temp-btn" data-value="常温">
-            <span class="temp-emoji">🍶</span>
-            <span>常温</span>
-          </button>
-          <button type="button" class="temp-btn" data-value="ぬる燗">
-            <span class="temp-emoji">♨️</span>
-            <span>ぬる燗</span>
-          </button>
-          <button type="button" class="temp-btn" data-value="熱燗">
-            <span class="temp-emoji">🔥</span>
-            <span>熱燗</span>
-          </button>
         </div>
       </section>
 
@@ -180,10 +155,35 @@
         </div>
       </section>
 
+      <!-- 温度選択 -->
+      <section class="form-section">
+        <label class="form-label">
+          <span class="label-icon">🌡️</span> 飲み方
+        </label>
+        <div class="temp-group" id="temp-group">
+          <button type="button" class="temp-btn" data-value="冷酒">
+            <span class="temp-emoji">🧊</span>
+            <span>冷酒</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="常温">
+            <span class="temp-emoji">🍶</span>
+            <span>常温</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="ぬる燗">
+            <span class="temp-emoji">♨️</span>
+            <span>ぬる燗</span>
+          </button>
+          <button type="button" class="temp-btn" data-value="熱燗">
+            <span class="temp-emoji">🔥</span>
+            <span>熱燗</span>
+          </button>
+        </div>
+      </section>
+
       <!-- 一言メモ -->
       <section class="form-section">
         <label class="form-label" for="memo">
-          <span class="label-icon">📝</span> 一言メモ
+          <span class="label-icon">📝</span> その他メモ
         </label>
         <textarea id="memo" class="form-textarea" placeholder="例：友人との花見で飲んだ一杯。香りが最高！" rows="3"></textarea>
       </section>
@@ -191,7 +191,7 @@
       <!-- 飲んだお店URL -->
       <section class="form-section">
         <label class="form-label" for="sake-url">
-          <span class="label-icon">🔗</span> 関連リンク（飲んだお店など） <span style="font-size: 0.75rem; color: var(--text-muted);">(任意)</span>
+          <span class="label-icon">🔗</span> 関連リンク（飲んだお店など）
         </label>
         <input type="url" id="sake-url" class="form-input" placeholder="https://...">
       </section>
@@ -205,18 +205,18 @@
       </section>
 
       <!-- 特別タグ -->
-      <section class="form-section fav-section">
+      <section class="form-section">
         <label class="form-label"><span class="label-icon">✨</span> 特別タグ</label>
         <div class="special-tags-group">
-          <button type="button" class="special-toggle" id="fav-toggle">
+          <button type="button" class="special-tag-btn" id="fav-toggle">
             <span class="special-icon" id="fav-heart">🤍</span>
-            <span class="special-text">また飲みたい</span>
+            <span class="special-text">お気に入り</span>
           </button>
-          <button type="button" class="special-toggle" id="sakura-toggle">
+          <button type="button" class="special-tag-btn" id="sakura-toggle">
             <span class="special-icon disable-emoji" id="sakura-icon">🌸</span>
-            <span class="special-text">桜関連</span>
+            <span class="special-text">概念</span>
           </button>
-          <button type="button" class="special-toggle" id="yamaguchi-toggle">
+          <button type="button" class="special-tag-btn" id="yamaguchi-toggle">
             <span class="special-icon disable-emoji" id="yamaguchi-icon">🐡</span>
             <span class="special-text">山口のお酒</span>
           </button>
@@ -299,7 +299,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
           <h2 style="margin:0;">📦 データ管理</h2>
           <div style="text-align:right;">
-            <span id="app-version" style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:block;margin-bottom:4px;">v1.0.9</span></span>
+            <span id="app-version" style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:block;margin-bottom:4px;">v1.1.0</span></span>
             <button id="check-update-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;">最新版を確認</button>
           </div>
         </div>

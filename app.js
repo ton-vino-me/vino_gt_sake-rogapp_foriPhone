@@ -434,13 +434,13 @@
         <button class="modal-s-btn" id="modal-fav" data-id="${r.id}">${r.favorite ? '❤️' : '🤍'}</button>
         <button class="modal-s-btn ${r.sakura ? 'on' : 'off'}" id="modal-sakura" data-id="${r.id}">🌸</button>
         <button class="modal-s-btn ${r.yamaguchi ? 'on' : 'off'}" id="modal-yamaguchi" data-id="${r.id}">🐡</button>
+        ${r.rating ? `<div class="card-rating" style="margin-left:auto;font-size:1.5rem;">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : ''}
       </div>
       <h2 class="modal-name">${escapeHtml(r.name)}</h2>
-      ${r.rating ? `<div class="card-rating" style="margin-top:8px;">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : ''}
-      <p class="modal-date">📅 ${formatDate(r.date)}</p>
+      <p class="modal-date" style="margin-top:8px;">📅 ${formatDate(r.date)}</p>
       ${photosHtml}
-      ${r.temp ? `<div class="modal-section"><p class="modal-section-title">飲み方</p><span class="modal-temp">${getTempEmoji(r.temp)} ${r.temp}</span></div>` : ''}
       ${r.tags && r.tags.length > 0 ? `<div class="modal-section"><p class="modal-section-title">味の感想</p><div class="modal-tags">${(r.tags || []).map(t => `<span class="modal-tag">${getTasteLabel(t)}</span>`).join('')}</div></div>` : ''}
+      ${r.temp ? `<div class="modal-section"><p class="modal-section-title">飲み方</p><span class="modal-temp">${getTempEmoji(r.temp)} ${r.temp}</span></div>` : ''}
       ${r.memo ? `<div class="modal-section"><p class="modal-section-title">メモ</p><p class="modal-memo">${escapeHtml(r.memo)}</p></div>` : ''}
       ${r.url ? `<div class="modal-section"><p class="modal-section-title">関連リンク（飲んだお店など）</p><a href="${escapeHtml(r.url)}" target="_blank" style="color: var(--blue); font-size: 0.85rem; text-decoration: underline; word-break: break-all;">${escapeHtml(r.url)}</a></div>` : ''}
       <div class="modal-actions">
