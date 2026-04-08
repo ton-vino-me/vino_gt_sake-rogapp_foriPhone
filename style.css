@@ -651,23 +651,27 @@ input[type="date"] {
   line-height: 1;
 }
 
-.card-rating-star[data-value="1"] {
+.card-rating-star:not(.active) {
+  color: #e0e0e0;
+}
+
+.card-rating-star[data-value="1"].active {
   color: #38bdf8;
 }
 
-.card-rating-star[data-value="2"] {
+.card-rating-star[data-value="2"].active {
   color: #60a5fa;
 }
 
-.card-rating-star[data-value="3"] {
+.card-rating-star[data-value="3"].active {
   color: #818cf8;
 }
 
-.card-rating-star[data-value="4"] {
+.card-rating-star[data-value="4"].active {
   color: #a78bfa;
 }
 
-.card-rating-star[data-value="5"] {
+.card-rating-star[data-value="5"].active {
   color: #a855f7;
 }
 

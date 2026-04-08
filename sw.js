@@ -11,7 +11,8 @@ const ASSETS = [
   './style.css',
   './app.js',
   './manifest.json',
-  './sakerog_icon.png'
+  './sakerog_icon.png',
+  './changelog.json'
 ];
 
 // インストール時にファイルをキャッシュ（キャッシュを無視して常にサーバーから取得）

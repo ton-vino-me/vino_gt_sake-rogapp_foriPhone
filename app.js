@@ -146,6 +146,23 @@
       btn.textContent = isOpen ? '▲ 閉じる' : '📱 機種変更の流れを見る';
     });
 
+    document.getElementById('changelog-btn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('./changelog.json');
+        if (!response.ok) throw new Error('Failed to fetch');
+        const changelog = await response.json();
+        const currentVersion = 'v1.1.1';
+        if (!changelog[currentVersion]) {
+          showToast('⚠️ バージョン情報が見つかりません');
+          return;
+        }
+        showUpdateModal(currentVersion, changelog[currentVersion]);
+      } catch (error) {
+        console.error('Changelog error:', error);
+        showToast('⚠️ 更新履歴の読み込みに失敗しました');
+      }
+    });
+
     // --- Filters ---
     filterYear.addEventListener('change', renderList);
     filterMonth.addEventListener('change', renderList);
@@ -404,7 +421,10 @@
          ${specials}</div>`
       : `<div class="card-photo-wrap card-photo-empty"><span class="card-photo-placeholder">🍶</span>${specials}</div>`;
 
-    const rating = r.rating ? `<div class="card-rating">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : '';
+    const rating = `<div class="card-rating">${Array.from({length: 5}, (_, i) => {
+      const isActive = i < (r.rating || 0);
+      return `<span class="card-rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
+    }).join('')}</div>`;
     const temp = r.temp ? `<span class="card-temp">${getTempEmoji(r.temp)} ${r.temp}</span>` : '';
     const tags = (r.tags || []).slice(0, 2).map(t => `<span class="card-tag">${t}</span>`).join('');
     const more = (r.tags || []).length > 2 ? `<span class="card-tag">+${r.tags.length - 2}</span>` : '';
@@ -434,7 +454,10 @@
         <button class="modal-s-btn" id="modal-fav" data-id="${r.id}">${r.favorite ? '❤️' : '🤍'}</button>
         <button class="modal-s-btn ${r.sakura ? 'on' : 'off'}" id="modal-sakura" data-id="${r.id}">🌸</button>
         <button class="modal-s-btn ${r.yamaguchi ? 'on' : 'off'}" id="modal-yamaguchi" data-id="${r.id}">🐡</button>
-        ${r.rating ? `<div class="card-rating" style="margin-left:auto;font-size:1.5rem;">${Array.from({length: r.rating}, (_, i) => `<span class="card-rating-star" data-value="${i+1}">★</span>`).join('')}</div>` : ''}
+        <div class="card-rating" style="margin-left:auto;font-size:1.5rem;">${Array.from({length: 5}, (_, i) => {
+          const isActive = i < (r.rating || 0);
+          return `<span class="card-rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
+        }).join('')}</div>
       </div>
       <h2 class="modal-name">${escapeHtml(r.name)}</h2>
       <p class="modal-date" style="margin-top:8px;">📅 ${formatDate(r.date)}</p>
@@ -552,7 +575,64 @@
     document.addEventListener('DOMContentLoaded', () => {
       init();
       initServiceWorker();
+      checkAndShowUpdateLog();
     });
+
+    // --- Update Log Display ---
+    async function checkAndShowUpdateLog() {
+      const LAST_VERSION_KEY = 'sake_log_last_version';
+      const currentVersion = 'v1.1.1';
+      const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
+
+      if (lastVersion && lastVersion !== currentVersion) {
+        try {
+          const response = await fetch('./changelog.json');
+          const changelog = await response.json();
+          showUpdateModal(currentVersion, changelog[currentVersion]);
+          localStorage.setItem(LAST_VERSION_KEY, currentVersion);
+        } catch (error) {
+          console.error('Failed to load changelog:', error);
+        }
+      } else if (!lastVersion) {
+        localStorage.setItem(LAST_VERSION_KEY, currentVersion);
+      }
+    }
+
+    function showUpdateModal(version, versionData) {
+      const updateModalOverlay = document.getElementById('update-modal-overlay');
+      const updateModalContent = document.getElementById('update-modal-content');
+      const updateModalClose = document.getElementById('update-modal-close');
+
+      if (!versionData) return;
+
+      const changesHtml = versionData.changes.map(change => `<li>${change}</li>`).join('');
+      updateModalContent.innerHTML = `
+        <h2 style="font-size:1.3rem;margin-bottom:0.5rem;color:var(--text-primary);">🎉 アップデート完了</h2>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">${version} (${versionData.date})</p>
+        <div style="background:rgba(99,102,241,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;">
+          <p style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">更新内容</p>
+          <ul style="margin:0;padding-left:1.2rem;font-size:0.85rem;color:var(--text-body);line-height:1.7;">
+            ${changesHtml}
+          </ul>
+        </div>
+        <button onclick="document.getElementById('update-modal-overlay').classList.remove('show');document.body.style.overflow='';" style="width:100%;margin-top:1.2rem;padding:12px;background:linear-gradient(90deg,var(--blue),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;">閉じる</button>
+      `;
+
+      updateModalOverlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      updateModalClose.addEventListener('click', () => {
+        updateModalOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+      });
+
+      updateModalOverlay.addEventListener('click', (e) => {
+        if (e.target === updateModalOverlay) {
+          updateModalOverlay.classList.remove('show');
+          document.body.style.overflow = '';
+        }
+      });
+    }
 
     // --- Service Worker & Update Logic ---
     let isManualChecking = false;
