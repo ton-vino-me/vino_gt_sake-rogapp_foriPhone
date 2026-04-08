@@ -231,7 +231,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.2.1';
+        const currentVersion = 'v1.2.2';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -722,7 +722,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.2.1';
+      const currentVersion = 'v1.2.2';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
@@ -781,41 +781,55 @@
 
     // SWの登録と更新チェック
     function initServiceWorker() {
+      const checkUpdateBtn = document.getElementById('check-update-btn');
+
+      // 手動更新チェックボタン（SW登録の成否に関わらず常に反応させる）
+      if (checkUpdateBtn) {
+        checkUpdateBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+
+          if (!('serviceWorker' in navigator)) {
+            alert('この環境では更新機能が利用できません');
+            return;
+          }
+
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (!reg) {
+            showToast('⚠️ 更新機能の準備中です（再読み込み後にお試しください）');
+            return;
+          }
+
+          if (reg.waiting) {
+            if (confirm('更新データがあります。このまま更新しますか？')) {
+              reg.waiting.postMessage('skipWaiting');
+            }
+            return;
+          }
+
+          isManualChecking = true;
+          showToast('🔍 サーバーをチェック中...');
+          checkUpdateBtn.classList.add('checking');
+
+          checkUpdateTimeout = setTimeout(() => {
+            if (isManualChecking) {
+              isManualChecking = false;
+              checkUpdateBtn.classList.remove('checking');
+              alert('現在更新データはありません');
+            }
+          }, 5000);
+
+          reg.update().catch(() => {
+            isManualChecking = false;
+            checkUpdateBtn.classList.remove('checking');
+            clearTimeout(checkUpdateTimeout);
+            showToast('⚠️ 通信エラーが発生しました');
+          });
+        });
+      }
+
       if (!('serviceWorker' in navigator)) return;
 
       navigator.serviceWorker.register('./sw.js').then(reg => {
-        // 手動更新チェックボタン
-        const checkUpdateBtn = document.getElementById('check-update-btn');
-        if (checkUpdateBtn) {
-          checkUpdateBtn.addEventListener('click', () => {
-            if (reg.waiting) {
-              if (confirm('更新データがあります。このまま更新しますか？')) {
-                reg.waiting.postMessage('skipWaiting');
-              }
-              return;
-            }
-
-            isManualChecking = true;
-            showToast('🔍 サーバーをチェック中...');
-            checkUpdateBtn.classList.add('checking');
-            
-            checkUpdateTimeout = setTimeout(() => {
-              if (isManualChecking) {
-                isManualChecking = false;
-                checkUpdateBtn.classList.remove('checking');
-                alert('現在更新データはありません');
-              }
-            }, 5000);
-
-            reg.update().catch(() => {
-              isManualChecking = false;
-              checkUpdateBtn.classList.remove('checking');
-              clearTimeout(checkUpdateTimeout);
-              showToast('⚠️ 通信エラーが発生しました');
-            });
-          });
-        }
-
         // 1時間おきに自動チェック（開きっぱなし対策）
         setInterval(() => {
           reg.update();
@@ -838,6 +852,8 @@
             }
           });
         });
+      }).catch(() => {
+        // 手動チェック側でフォールバック通知するため、ここでは握りつぶす
       });
 
       // 更新ボタン（ヘッダーのバッジ）のイベント
