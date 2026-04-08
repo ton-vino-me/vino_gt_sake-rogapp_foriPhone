@@ -1235,6 +1235,50 @@ input[type="date"] {
   padding-top: 10px;
 }
 
+/* --- Month Filter Chips inside Accordion --- */
+.month-chip-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 16px 14px;
+  margin-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.month-chip-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.month-chip {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: min-width 0.2s, background 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1.4;
+}
+
+.month-chip.active {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.month-chip:active {
+  transform: scale(0.95);
+}
+
+.record-list .record-card.hidden {
+  display: none;
+}
+
 /* --- Card Special Buttons --- */
 .card-specials {
   position: absolute;

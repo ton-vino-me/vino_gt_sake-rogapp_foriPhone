@@ -151,7 +151,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.1.5';
+        const currentVersion = 'v1.1.6';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -365,6 +365,16 @@
 
     accordionContainer.innerHTML = Object.keys(grouped).sort((a,b) => b.localeCompare(a)).map((year, yi) => {
       const isOpen = yi === 0;
+      
+      // Extract available months for this year and sort them
+      const availableMonths = [...new Set(grouped[year].map(r => getMonth(r.date)))].sort((a,b) => parseInt(a) - parseInt(b));
+      
+      const chipsHtml = availableMonths.length > 1 ? `
+        <div class="month-chip-bar" data-year="${year}">
+          <button class="month-chip active" data-month="all">すべて</button>
+          ${availableMonths.map(m => `<button class="month-chip" data-month="${m}">${m}月</button>`).join('')}
+        </div>` : '';
+
       return `
         <div class="accordion-group" data-year="${year}">
           <button class="accordion-header ${isOpen ? 'open' : ''}" data-year="${year}">
@@ -373,7 +383,8 @@
             <span class="accordion-arrow">${isOpen ? '▼' : '▶'}</span>
           </button>
           <div class="accordion-body ${isOpen ? 'open' : ''}" data-year="${year}">
-            <div class="record-list">${grouped[year].map(r => buildCard(r)).join('')}</div>
+            ${chipsHtml}
+            <div class="record-list" data-year="${year}">${grouped[year].map(r => buildCard(r)).join('')}</div>
           </div>
         </div>`;
     }).join('');
@@ -383,6 +394,33 @@
         const isOpen = header.classList.toggle('open');
         accordionContainer.querySelector(`.accordion-body[data-year="${header.dataset.year}"]`).classList.toggle('open', isOpen);
         header.querySelector('.accordion-arrow').textContent = isOpen ? '▼' : '▶';
+      });
+    });
+
+    // --- Monthly Chip Filtering ---
+    accordionContainer.querySelectorAll('.month-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const year = chip.parentElement.dataset.year;
+        const month = chip.dataset.month;
+        const bar = chip.parentElement;
+        const list = accordionContainer.querySelector(`.record-list[data-year="${year}"]`);
+        
+        // Update active state
+        bar.querySelectorAll('.month-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        
+        // Filter cards
+        list.querySelectorAll('.record-card').forEach(card => {
+          if (month === 'all' || card.dataset.month === month) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        // Haptic feedback (subtle)
+        if ('vibrate' in navigator) navigator.vibrate(5);
       });
     });
 
@@ -429,7 +467,7 @@
     const tags = (r.tags || []).slice(0, 2).map(t => `<span class="card-tag">${t}</span>`).join('');
     const more = (r.tags || []).length > 2 ? `<span class="card-tag">+${r.tags.length - 2}</span>` : '';
 
-    return `<div class="record-card" data-id="${r.id}">${photo}
+    return `<div class="record-card" data-id="${r.id}" data-month="${getMonth(r.date)}">${photo}
       <div class="card-body"><h3 class="card-name">${escapeHtml(r.name)}</h3>
       ${rating}
       <p class="card-date">${formatDateShort(r.date)}</p>
@@ -581,7 +619,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.1.5';
+      const currentVersion = 'v1.1.6';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
