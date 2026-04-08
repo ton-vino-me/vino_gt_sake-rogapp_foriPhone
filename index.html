@@ -296,13 +296,7 @@
     <div class="modal" id="data-modal">
       <button class="modal-close" id="data-modal-close">✕</button>
       <div class="modal-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
-          <h2 style="margin:0;">📦 データ管理</h2>
-          <div style="text-align:right;">
-            <button id="changelog-btn" style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:4px 10px;border-radius:100px;display:block;margin-bottom:4px;border:none;cursor:pointer;font-family:inherit;text-align:center;line-height:1.4;">v1.1.1<br>(変更履歴を見る)</button>
-            <button id="check-update-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;">最新版を確認</button>
-          </div>
-        </div>
+        <h2 style="margin-bottom:1.2rem;">📦 データ管理</h2>
         <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">機種変更時はエクスポートしたファイルを新しい端末でインポートしてください。</p>
         <button class="save-btn" id="export-btn" style="margin-bottom:1rem;">
           <span>📤</span> データをエクスポート
@@ -322,6 +316,12 @@
             <li>ファイルアプリからエクスポートしたJSONファイルを選択</li>
             <li>確認ダイアログで「OK」を押せば引き継ぎ完了</li>
           </ol>
+        </div>
+
+        <div style="text-align:right;margin-top:1.5rem;">
+          <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px;">v1.1.1</span><br>
+          <button id="changelog-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;margin-bottom:2px;">変更履歴を見る</button><br>
+          <button id="check-update-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;">最新版を確認</button>
         </div>
       </div>
     </div>
