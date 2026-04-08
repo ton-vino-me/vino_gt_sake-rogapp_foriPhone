@@ -45,11 +45,18 @@
   const sakuraToggle = document.getElementById('sakura-toggle');
   const yamaguchiToggle = document.getElementById('yamaguchi-toggle');
 
-  const filterYear = document.getElementById('filter-year');
-  const filterMonth = document.getElementById('filter-month');
   const filterFavBtn = document.getElementById('filter-fav');
   const filterSakuraBtn = document.getElementById('filter-sakura');
   const filterYamaguchiBtn = document.getElementById('filter-yamaguchi');
+
+  // v1.1.7 Search & Advanced Filters
+  const filterKeyword = document.getElementById('filter-keyword');
+  const filterExpandBtn = document.getElementById('filter-expand-btn');
+  const advancedPanel = document.getElementById('advanced-filter-panel');
+  const yearChipsEl = document.getElementById('year-chips');
+  const monthChipsEl = document.getElementById('month-chips');
+  const ratingFilterGroup = document.getElementById('filter-rating-group');
+  const filterResetBtn = document.getElementById('filter-reset-btn');
 
   // --- State ---
   let photos = [];
@@ -62,6 +69,11 @@
   let filterFavActive = false;
   let filterSakuraActive = false;
   let filterYamaguchiActive = false;
+
+  // v1.1.7 Filter State
+  let selectedYear = 'all';
+  let selectedMonth = 'all';
+  let selectedMinRating = 0;
 
   // --- Init ---
   function init() {
@@ -139,6 +151,66 @@
     exportBtn.addEventListener('click', exportData);
     importInput.addEventListener('change', importData);
 
+    // --- Search & Advanced Filters (v1.1.7) ---
+    filterKeyword.addEventListener('input', () => {
+      renderList();
+    });
+
+    filterExpandBtn.addEventListener('click', () => {
+      const isOpen = advancedPanel.classList.toggle('show');
+      filterExpandBtn.classList.toggle('active', isOpen);
+    });
+
+    monthChipsEl.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        monthChipsEl.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedMonth = chip.dataset.month;
+        renderList();
+      });
+    });
+
+    ratingFilterGroup.querySelectorAll('.rating-filter-chip, .rating-star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.rating, 10);
+        selectedMinRating = val;
+        
+        // Update UI
+        ratingFilterGroup.querySelector('.rating-filter-chip').classList.toggle('active', val === 0);
+        ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach((star, i) => {
+          star.classList.toggle('active', i < val);
+        });
+        renderList();
+      });
+    });
+
+    filterResetBtn.addEventListener('click', () => {
+      // Reset State
+      filterKeyword.value = '';
+      selectedYear = 'all';
+      selectedMonth = 'all';
+      selectedMinRating = 0;
+      filterFavActive = false;
+      filterSakuraActive = false;
+      filterYamaguchiActive = false;
+
+      // Update UI
+      advancedPanel.classList.remove('show');
+      filterExpandBtn.classList.remove('active');
+      monthChipsEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.month === 'all'));
+      ratingFilterGroup.querySelector('.rating-filter-chip').classList.add('active');
+      ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach(s => s.classList.remove('active'));
+      filterFavBtn.classList.remove('active');
+      filterFavBtn.querySelector('span').textContent = '🤍';
+      filterSakuraBtn.classList.add('inactive');
+      filterSakuraBtn.classList.remove('active');
+      filterYamaguchiBtn.classList.add('inactive');
+      filterYamaguchiBtn.classList.remove('active');
+
+      renderList();
+      showToast('🍀 フィルターをリセットしました');
+    });
+
     document.getElementById('guide-toggle-btn').addEventListener('click', () => {
       const steps = document.getElementById('guide-steps');
       const btn = document.getElementById('guide-toggle-btn');
@@ -151,7 +223,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.1.6';
+        const currentVersion = 'v1.1.7';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -333,15 +405,40 @@
   function renderList() {
     let records = getRecords();
 
-    // Populate Year dropdown based on all data
-    const years = [...new Set(records.map(r => getYear(r.date)).filter(y => y))].sort((a,b) => b.localeCompare(a));
-    const currY = filterYear.value;
-    filterYear.innerHTML = '<option value="">すべての年</option>' + years.map(y => `<option value="${y}" ${y === currY ? 'selected' : ''}>${y}年</option>`).join('');
+    // 1. Populate Year Chips (Advanced Filter)
+    const allRecords = getRecords();
+    const years = [...new Set(allRecords.map(r => getYear(r.date)).filter(y => y))].sort((a,b) => b.localeCompare(a));
+    yearChipsEl.innerHTML = `<button class="chip ${selectedYear === 'all' ? 'active' : ''}" data-year="all">すべて</button>` + 
+      years.map(y => `<button class="chip ${y === selectedYear ? 'active' : ''}" data-year="${y}">${y}年</button>`).join('');
+    
+    // Add event listeners to year chips
+    yearChipsEl.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        selectedYear = chip.dataset.year;
+        renderList();
+      });
+    });
 
-    // Apply filters
-    const fy = filterYear.value, fm = filterMonth.value;
-    if (fy) records = records.filter(r => getYear(r.date) === fy);
-    if (fm) records = records.filter(r => getMonth(r.date) === fm);
+    // 2. Apply Filters
+    const kw = filterKeyword.value.toLowerCase().trim();
+
+    // Keyword Filter (Name & Memo)
+    if (kw) {
+      records = records.filter(r => 
+        (r.name || '').toLowerCase().includes(kw) || 
+        (r.memo || '').toLowerCase().includes(kw) ||
+        (r.tags || []).some(t => t.toLowerCase().includes(kw))
+      );
+    }
+
+    // Year & Month Filter
+    if (selectedYear !== 'all') records = records.filter(r => getYear(r.date) === selectedYear);
+    if (selectedMonth !== 'all') records = records.filter(r => getMonth(r.date) === selectedMonth);
+
+    // Rating Filter (Minimum Rating)
+    if (selectedMinRating > 0) records = records.filter(r => (r.rating || 0) >= selectedMinRating);
+
+    // Special Tag Filters
     if (filterFavActive) records = records.filter(r => r.favorite);
     if (filterSakuraActive) records = records.filter(r => r.sakura);
     if (filterYamaguchiActive) records = records.filter(r => r.yamaguchi);
@@ -619,7 +716,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.1.6';
+      const currentVersion = 'v1.1.7';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {

@@ -233,26 +233,64 @@
   <!-- ========== 記録一覧画面 ========== -->
   <main class="screen" id="screen-list">
     <!-- フィルターバー -->
-    <div class="filter-bar">
-      <div class="filter-row">
-        <select class="filter-select" id="filter-year">
-          <option value="">すべての年</option>
-        </select>
-        <select class="filter-select" id="filter-month">
-          <option value="">すべての月</option>
-          <option value="1">1月</option>
-          <option value="2">2月</option>
-          <option value="3">3月</option>
-          <option value="4">4月</option>
-          <option value="5">5月</option>
-          <option value="6">6月</option>
-          <option value="7">7月</option>
-          <option value="8">8月</option>
-          <option value="9">9月</option>
-          <option value="10">10月</option>
-          <option value="11">11月</option>
-          <option value="12">12月</option>
-        </select>
+    <!-- フィルターバー刷新 (v1.1.7) -->
+    <div class="filter-area">
+      <div class="search-bar-row">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="filter-keyword" class="search-input" placeholder="銘柄やメモで検索...">
+        </div>
+        <button class="filter-expand-btn" id="filter-expand-btn" title="詳細検索">
+          <span class="gear-icon">⚙️</span>
+        </button>
+      </div>
+
+      <!-- 詳細フィルターパネル -->
+      <div class="advanced-filter-panel" id="advanced-filter-panel">
+        <div class="adv-filter-section">
+          <label class="adv-label">📅 年</label>
+          <div class="chip-scroll" id="year-chips">
+            <!-- JSで動的に生成 -->
+          </div>
+        </div>
+        <div class="adv-filter-section">
+          <label class="adv-label">🗓️ 月</label>
+          <div class="chip-scroll" id="month-chips">
+            <button class="chip active" data-month="all">すべて</button>
+            <button class="chip" data-month="1">1月</button>
+            <button class="chip" data-month="2">2月</button>
+            <button class="chip" data-month="3">3月</button>
+            <button class="chip" data-month="4">4月</button>
+            <button class="chip" data-month="5">5月</button>
+            <button class="chip" data-month="6">6月</button>
+            <button class="chip" data-month="7">7月</button>
+            <button class="chip" data-month="8">8月</button>
+            <button class="chip" data-month="9">9月</button>
+            <button class="chip" data-month="10">10月</button>
+            <button class="chip" data-month="11">11月</button>
+            <button class="chip" data-month="12">12月</button>
+          </div>
+        </div>
+        <div class="adv-filter-section">
+          <label class="adv-label">⭐ 評価 (以上)</label>
+          <div class="rating-filter-group" id="filter-rating-group">
+            <button class="rating-filter-chip active" data-rating="0">すべて</button>
+            <div class="rating-stars-filter">
+              <button class="rating-star-btn" data-rating="1">★</button>
+              <button class="rating-star-btn" data-rating="2">★</button>
+              <button class="rating-star-btn" data-rating="3">★</button>
+              <button class="rating-star-btn" data-rating="4">★</button>
+              <button class="rating-star-btn" data-rating="5">★</button>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; padding-top:4px;">
+          <button class="filter-reset-btn" id="filter-reset-btn">全ての条件をリセット</button>
+        </div>
+      </div>
+
+      <!-- クイックタグ（お気に入り等） -->
+      <div class="quick-tags-row">
         <div class="filter-specials">
           <button class="filter-special-btn" id="filter-fav" title="お気に入りだけ表示">
             <span id="filter-fav-icon">🤍</span>
@@ -319,7 +357,7 @@
         </div>
 
         <div style="text-align:right;margin-top:1.5rem;">
-          <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px;">v1.1.6</span><br>
+          <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px;">v1.1.7</span><br>
           <button id="changelog-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;margin-bottom:2px;">変更履歴を見る</button><br>
           <button id="check-update-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;">最新版を確認</button>
         </div>
