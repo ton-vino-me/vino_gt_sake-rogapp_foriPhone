@@ -151,7 +151,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.1.1';
+        const currentVersion = 'v1.1.4';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -581,7 +581,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.1.1';
+      const currentVersion = 'v1.1.4';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
@@ -642,9 +642,6 @@
     function initServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
 
-      let isManualChecking = false;
-      let checkUpdateTimeout = null;
-
       navigator.serviceWorker.register('./sw.js').then(reg => {
         // 手動更新チェックボタン
         const checkUpdateBtn = document.getElementById('check-update-btn');
@@ -659,16 +656,19 @@
 
             isManualChecking = true;
             showToast('🔍 サーバーをチェック中...');
+            checkUpdateBtn.classList.add('checking');
             
             checkUpdateTimeout = setTimeout(() => {
               if (isManualChecking) {
                 isManualChecking = false;
+                checkUpdateBtn.classList.remove('checking');
                 alert('現在更新データはありません');
               }
             }, 5000);
 
             reg.update().catch(() => {
               isManualChecking = false;
+              checkUpdateBtn.classList.remove('checking');
               clearTimeout(checkUpdateTimeout);
               showToast('⚠️ 通信エラーが発生しました');
             });
@@ -723,6 +723,9 @@
 
     function showUpdateNotify() {
       const notify = document.getElementById('update-notify');
-      if (notify) notify.style.display = 'block';
+      if (notify) {
+        notify.style.display = 'block';
+        notify.classList.add('pulse');
+      }
     }
   })();
