@@ -233,16 +233,29 @@
   <!-- ========== 記録一覧画面 ========== -->
   <main class="screen" id="screen-list">
     <!-- フィルターバー -->
-    <!-- フィルターバー刷新 (v1.1.7) -->
+    <!-- フィルターバー刷新 (v1.1.9 1行集約) -->
     <div class="filter-area">
       <div class="search-bar-row">
         <div class="search-input-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="filter-keyword" class="search-input" placeholder="銘柄やメモで検索...">
+          <input type="text" id="filter-keyword" class="search-input" placeholder="キーワードで検索">
         </div>
+        
         <button class="filter-expand-btn" id="filter-expand-btn" title="詳細検索">
           <span class="gear-icon">⚙️</span>
         </button>
+
+        <div class="filter-specials">
+          <button class="filter-special-btn" id="filter-fav" title="お気に入りだけ表示">
+            <span id="filter-fav-icon">🤍</span>
+          </button>
+          <button class="filter-special-btn inactive" id="filter-sakura" title="桜関連だけ表示">
+            <span class="disable-emoji">🌸</span>
+          </button>
+          <button class="filter-special-btn inactive" id="filter-yamaguchi" title="山口のお酒だけ表示">
+            <span class="disable-emoji">🐡</span>
+          </button>
+        </div>
       </div>
 
       <!-- 詳細フィルターパネル -->
@@ -286,21 +299,6 @@
         </div>
         <div style="text-align:center; padding-top:4px;">
           <button class="filter-reset-btn" id="filter-reset-btn">全ての条件をリセット</button>
-        </div>
-      </div>
-
-      <!-- クイックタグ（お気に入り等） -->
-      <div class="quick-tags-row">
-        <div class="filter-specials">
-          <button class="filter-special-btn" id="filter-fav" title="お気に入りだけ表示">
-            <span id="filter-fav-icon">🤍</span>
-          </button>
-          <button class="filter-special-btn inactive" id="filter-sakura" title="桜関連だけ表示">
-            <span class="disable-emoji">🌸</span>
-          </button>
-          <button class="filter-special-btn inactive" id="filter-yamaguchi" title="山口のお酒だけ表示">
-            <span class="disable-emoji">🐡</span>
-          </button>
         </div>
       </div>
     </div>
@@ -357,7 +355,7 @@
         </div>
 
         <div style="text-align:right;margin-top:1.5rem;">
-          <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px;">v1.1.7</span><br>
+          <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px;">v1.1.9</span><br>
           <button id="changelog-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;margin-bottom:2px;">変更履歴を見る</button><br>
           <button id="check-update-btn" style="font-size:0.65rem;color:var(--blue);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;">最新版を確認</button>
         </div>

@@ -1105,7 +1105,7 @@ input[type="date"] {
 
 .search-bar-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -1113,55 +1113,59 @@ input[type="date"] {
 .search-input-wrap {
   position: relative;
   flex: 1;
+  min-width: 0; /* Important for flex-shrink on mobile */
 }
 
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.5;
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 11px 12px 11px 36px;
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid var(--border);
+  padding: 10px 10px 10px 32px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-sm);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-primary);
   transition: var(--transition);
   -webkit-appearance: none;
   appearance: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  background: #fff;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .filter-expand-btn {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid var(--border);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
+  flex-shrink: 0;
 }
 
 .filter-expand-btn.active {
@@ -1172,6 +1176,46 @@ input[type="date"] {
 
 .filter-expand-btn.active .gear-icon {
   filter: brightness(0) invert(1);
+}
+
+.filter-specials {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.filter-special-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
+}
+
+.filter-special-btn.active {
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(251, 113, 133, 0.08));
+  border-color: rgba(244, 114, 182, 0.4);
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.15);
+}
+
+.filter-special-btn:not(.active) .disable-emoji {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.filter-special-btn:active {
+  transform: scale(0.95);
 }
 
 /* Advanced Filter Panel */
@@ -1306,50 +1350,6 @@ input[type="date"] {
   padding: 8px 16px;
   margin-top: 4px;
   opacity: 0.8;
-}
-
-.quick-tags-row {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 4px;
-}
-
-.filter-specials {
-  display: flex;
-  gap: 8px;
-}
-
-.filter-special-btn {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: var(--transition);
-  -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
-}
-
-.filter-special-btn.active {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(251, 113, 133, 0.08));
-  border-color: rgba(244, 114, 182, 0.4);
-  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.15);
-}
-
-.filter-special-btn:not(.active) .disable-emoji {
-  opacity: 0.4;
-  filter: grayscale(1);
-}
-
-.filter-special-btn:active {
-  transform: scale(0.95);
 }
 
 /* --- Accordion --- */
