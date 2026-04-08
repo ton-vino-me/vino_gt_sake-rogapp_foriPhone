@@ -546,7 +546,7 @@ input[type="date"] {
 
 /* --- Record List (2列グリッド) --- */
 .list-header {
-  padding: 0 4px 4px;
+  padding: 0 4px 0;
 }
 
 .record-count {
@@ -1100,14 +1100,14 @@ input[type="date"] {
 
 /* --- Filter Area (v1.1.7 刷新) --- */
 .filter-area {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .search-bar-row {
   display: flex;
   gap: 6px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .search-input-wrap {
@@ -1118,17 +1118,20 @@ input[type="date"] {
 
 .search-icon {
   position: absolute;
-  left: 10px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 0.85rem;
-  opacity: 0.5;
-  pointer-events: none;
+  font-size: 0.9rem;
+  opacity: 0.4;
+  filter: grayscale(1);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 5;
 }
 
 .search-input {
   width: 100%;
-  padding: 10px 10px 10px 32px;
+  padding: 10px 40px 10px 12px;
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
