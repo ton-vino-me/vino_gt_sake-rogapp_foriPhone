@@ -59,6 +59,7 @@
   const monthSelect = document.getElementById('month-select');
   const ratingFilterGroup = document.getElementById('filter-rating-group');
   const filterResetBtn = document.getElementById('filter-reset-btn');
+  const filterInlineResetBtn = document.getElementById('filter-inline-reset-btn');
   const searchSubmit = document.getElementById('search-submit');
 
   // --- State ---
@@ -220,35 +221,8 @@
       });
     });
 
-    filterResetBtn.addEventListener('click', () => {
-      // Reset State
-      filterKeyword.value = '';
-      selectedYear = 'all';
-      selectedMonth = 'all';
-      selectedMinRating = 0;
-      filterFavActive = false;
-      filterSakuraActive = false;
-      filterYamaguchiActive = false;
-
-      // Update UI
-      advancedPanel.classList.remove('show');
-      filterExpandBtn.classList.remove('active');
-      if (yearAllBtn) yearAllBtn.classList.add('active');
-      if (yearSelect) yearSelect.value = '';
-      if (monthAllBtn) monthAllBtn.classList.add('active');
-      if (monthSelect) monthSelect.value = '';
-      ratingFilterGroup.querySelector('.rating-filter-chip').classList.add('active');
-      ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach(s => s.classList.remove('active'));
-      filterFavBtn.classList.remove('active');
-      filterFavBtn.querySelector('span').textContent = '🤍';
-      filterSakuraBtn.classList.add('inactive');
-      filterSakuraBtn.classList.remove('active');
-      filterYamaguchiBtn.classList.add('inactive');
-      filterYamaguchiBtn.classList.remove('active');
-
-      renderList();
-      showToast('🍀 フィルターをリセットしました');
-    });
+    filterResetBtn.addEventListener('click', resetAllFilters);
+    if (filterInlineResetBtn) filterInlineResetBtn.addEventListener('click', resetAllFilters);
 
     document.getElementById('guide-toggle-btn').addEventListener('click', () => {
       const steps = document.getElementById('guide-steps');
@@ -262,7 +236,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.2.3';
+        const currentVersion = 'v1.2.4';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -438,6 +412,23 @@
     renderList();
   }
 
+  function hasActiveListFilters() {
+    return (
+      (filterKeyword && filterKeyword.value.trim() !== '') ||
+      selectedYear !== 'all' ||
+      selectedMonth !== 'all' ||
+      selectedMinRating > 0 ||
+      filterFavActive ||
+      filterSakuraActive ||
+      filterYamaguchiActive
+    );
+  }
+
+  function updateInlineResetVisibility() {
+    if (!filterInlineResetBtn) return;
+    filterInlineResetBtn.hidden = !hasActiveListFilters();
+  }
+
   // --- Render List ---
   function renderList() {
     let records = getRecords();
@@ -485,6 +476,7 @@
 
     records.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     recordCountEl.textContent = `${records.length}件の記録`;
+    updateInlineResetVisibility();
 
     if (records.length === 0) {
       accordionContainer.innerHTML = '';
@@ -581,6 +573,34 @@
         else { btn.classList.toggle('on', r[prop]); btn.classList.toggle('off', !r[prop]); }
       });
     });
+  }
+
+  function resetAllFilters() {
+    filterKeyword.value = '';
+    selectedYear = 'all';
+    selectedMonth = 'all';
+    selectedMinRating = 0;
+    filterFavActive = false;
+    filterSakuraActive = false;
+    filterYamaguchiActive = false;
+
+    advancedPanel.classList.remove('show');
+    filterExpandBtn.classList.remove('active');
+    if (yearAllBtn) yearAllBtn.classList.add('active');
+    if (yearSelect) yearSelect.value = '';
+    if (monthAllBtn) monthAllBtn.classList.add('active');
+    if (monthSelect) monthSelect.value = '';
+    ratingFilterGroup.querySelector('.rating-filter-chip').classList.add('active');
+    ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach(s => s.classList.remove('active'));
+    filterFavBtn.classList.remove('active');
+    filterFavBtn.querySelector('span').textContent = '🤍';
+    filterSakuraBtn.classList.add('inactive');
+    filterSakuraBtn.classList.remove('active');
+    filterYamaguchiBtn.classList.add('inactive');
+    filterYamaguchiBtn.classList.remove('active');
+
+    renderList();
+    showToast('🍀 フィルターをリセットしました');
   }
 
   function buildCard(r) {
@@ -756,7 +776,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.2.3';
+      const currentVersion = 'v1.2.4';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {

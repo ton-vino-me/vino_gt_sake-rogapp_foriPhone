@@ -546,12 +546,40 @@ input[type="date"] {
 
 /* --- Record List (2列グリッド) --- */
 .list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 0 4px 0;
 }
 
 .record-count {
   font-size: 0.7rem;
   color: var(--text-muted);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-inline-reset-btn {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--blue);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.2;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+.filter-inline-reset-btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
 .record-list {
