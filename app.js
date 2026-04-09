@@ -236,7 +236,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.2.4';
+        const currentVersion = 'v1.2.8';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -610,25 +610,34 @@
         <button class="card-s-btn ${r.sakura ? 'on' : 'off'}" data-id="${r.id}" data-type="sakura">🌸</button>
         <button class="card-s-btn ${r.yamaguchi ? 'on' : 'off'}" data-id="${r.id}" data-type="yamaguchi">🐡</button>
       </div>`;
+    const dateOverlay = `<span class="card-date-overlay">${formatDateShort(r.date)}</span>`;
     const photo = (r.photos && r.photos.length > 0)
       ? `<div class="card-photo-wrap"><img src="${r.photos[0]}" class="card-photo">
+         ${dateOverlay}
          ${r.photos.length > 1 ? `<span class="card-photo-count">📷 ${r.photos.length}</span>` : ''}
          ${specials}</div>`
-      : `<div class="card-photo-wrap card-photo-empty"><span class="card-photo-placeholder">🍶</span>${specials}</div>`;
+      : `<div class="card-photo-wrap card-photo-empty"><span class="card-photo-placeholder">🍶</span>${dateOverlay}${specials}</div>`;
 
     const rating = `<div class="card-rating">${Array.from({length: 5}, (_, i) => {
       const isActive = i < (r.rating || 0);
       return `<span class="card-rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
     }).join('')}</div>`;
     const temp = r.temp ? `<span class="card-temp">${getTempEmoji(r.temp)} ${r.temp}</span>` : '';
-    const tags = (r.tags || []).slice(0, 2).map(t => `<span class="card-tag">${t}</span>`).join('');
-    const more = (r.tags || []).length > 2 ? `<span class="card-tag">+${r.tags.length - 2}</span>` : '';
+    const rawTags = r.tags || [];
+    let tagsBlock = '';
+    if (rawTags.length > 0) {
+      tagsBlock = `<div class="card-meta-tags"><span class="card-tag card-tag-ellipsis">${escapeHtml(rawTags[0])}</span>`;
+      if (rawTags.length > 1) {
+        tagsBlock += `<span class="card-tag card-tag-more">+${rawTags.length - 1}</span>`;
+      }
+      tagsBlock += '</div>';
+    }
+    const metaHtml = (temp || tagsBlock) ? `<div class="card-meta">${temp}${tagsBlock}</div>` : '';
 
     return `<div class="record-card" data-id="${r.id}" data-month="${getMonth(r.date)}">${photo}
       <div class="card-body"><h3 class="card-name">${escapeHtml(r.name)}</h3>
       ${rating}
-      <p class="card-date">${formatDateShort(r.date)}</p>
-      <div class="card-meta">${temp}${tags}${more}</div></div></div>`;
+      ${metaHtml}</div></div>`;
   }
 
   // --- Modal ---
@@ -764,7 +773,7 @@
   function getYear(d) { return d ? d.split('-')[0] : ''; }
   function getMonth(d) { return d ? String(parseInt(d.split('-')[1], 10)) : ''; }
   function formatDate(d) { if (!d) return ''; const [y, m, day] = d.split('-'); return `${y}年${parseInt(m)}月${parseInt(day)}日`; }
-  function formatDateShort(d) { if (!d) return ''; const [, m, day] = d.split('-'); return `${parseInt(m)}/${parseInt(day)}`; }
+  function formatDateShort(d) { if (!d) return ''; const [, m, day] = d.split('-'); return `${parseInt(m)}月${parseInt(day)}日`; }
   function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -776,7 +785,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.2.4';
+      const currentVersion = 'v1.2.8';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
