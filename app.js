@@ -80,11 +80,10 @@
   let selectedMinRating = 0;
 
   // --- Init ---
-  async function init() {
+  function init() {
     setDefaultDate();
     bindEvents();
-    await migrateFromLocalStorage();
-    await renderList();
+    renderList();
   }
 
   function setDefaultDate() {
@@ -157,8 +156,8 @@
     importInput.addEventListener('change', importData);
 
     // --- Search & Advanced Filters (v1.1.7) ---
-    searchSubmit.addEventListener('click', async () => {
-      await renderList();
+    searchSubmit.addEventListener('click', () => {
+      renderList();
     });
 
     filterKeyword.addEventListener('keydown', (e) => {
@@ -240,7 +239,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.4.1';
+        const currentVersion = 'v1.3.2';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -254,26 +253,26 @@
 
     // --- Filters ---
 
-    filterFavBtn.addEventListener('click', async () => {
+    filterFavBtn.addEventListener('click', () => {
       filterFavActive = !filterFavActive;
       filterFavBtn.classList.toggle('active', filterFavActive);
       document.getElementById('filter-fav-icon').textContent = filterFavActive ? '❤️' : '🤍';
-      await renderList();
+      renderList();
     });
-    filterSakuraBtn.addEventListener('click', async () => {
+    filterSakuraBtn.addEventListener('click', () => {
       filterSakuraActive = !filterSakuraActive;
       filterSakuraBtn.classList.toggle('active', filterSakuraActive);
-      await renderList();
+      renderList();
     });
-    filterYamaguchiBtn.addEventListener('click', async () => {
+    filterYamaguchiBtn.addEventListener('click', () => {
       filterYamaguchiActive = !filterYamaguchiActive;
       filterYamaguchiBtn.classList.toggle('active', filterYamaguchiActive);
-      await renderList();
+      renderList();
     });
   }
 
   // --- Tab Switching ---
-  async function switchTab(tab) {
+  function switchTab(tab) {
     tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
     if (tab === 'form') {
       screenForm.classList.add('active');
@@ -281,7 +280,7 @@
     } else {
       screenForm.classList.remove('active');
       screenList.classList.add('active');
-      await renderList();
+      renderList();
     }
   }
 
@@ -327,7 +326,7 @@
   }
 
   // --- Form Submit ---
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     const name = sakeName.value.trim();
     const url = sakeUrl.value.trim();
@@ -335,7 +334,7 @@
     const tasteTags = Array.from(document.querySelectorAll('#taste-tags input:checked')).map(cb => cb.value);
 
     if (editingId) {
-      await updateRecord(editingId, {
+      updateRecord(editingId, {
         name, photos: [...photos], temp: selectedTemp, rating: selectedRating, tags: tasteTags,
         memo: memoEl.value.trim(), url: url, date: recordDate.value,
         favorite: isFavorite, sakura: isSakura, yamaguchi: isYamaguchi
@@ -345,7 +344,7 @@
       resetForm();
       showToast('✏️ 記録を更新しました！');
     } else {
-      await saveRecord({
+      saveRecord({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name, photos: [...photos], temp: selectedTemp, rating: selectedRating, tags: tasteTags,
         memo: memoEl.value.trim(), url: url, date: recordDate.value,
@@ -355,7 +354,7 @@
       resetForm();
       showToast('🍓 記録を保存しました！');
     }
-    await switchTab('list');
+    switchTab('list');
   }
 
   function resetForm() {
@@ -374,9 +373,8 @@
     setDefaultDate();
   }
 
-  async function startEdit(id) {
-    const records = await getRecords();
-    const r = records.find(rec => rec.id === id);
+  function startEdit(id) {
+    const r = getRecords().find(rec => rec.id === id);
     if (!r) return;
     closeModal();
     editingId = id;
@@ -401,119 +399,20 @@
     yamaguchiToggle.classList.toggle('active', isYamaguchi);
     
     saveBtn.innerHTML = '<span class="save-icon">✏️</span> この記録を更新する';
-    await switchTab('form');
+    switchTab('form');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- Storage (IndexedDB) ---
-  const DB_NAME = 'SakeLogDB';
-  const STORE_NAME = 'records';
-  const DB_VERSION = 1;
-  let dbPromise = null;
-
-  function initDB() {
-    if (!dbPromise) {
-      dbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, DB_VERSION);
-        req.onupgradeneeded = e => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-          }
-        };
-        req.onsuccess = e => { resolve(e.target.result); };
-        req.onerror = e => reject(e.target.error);
-      });
-    }
-    return dbPromise;
+  // --- Storage ---
+  function getRecords() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+  function saveRecord(record) { const r = getRecords(); r.unshift(record); localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
+  function updateRecord(id, data) {
+    const r = getRecords(), i = r.findIndex(x => x.id === id);
+    if (i !== -1) { r[i] = { ...r[i], ...data }; localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
   }
-
-  async function migrateFromLocalStorage() {
-    const localData = localStorage.getItem(STORAGE_KEY);
-    if (!localData) return;
-    try {
-      const records = JSON.parse(localData);
-      if (Array.isArray(records) && records.length > 0) {
-        const db = await initDB();
-        const count = await new Promise((res, rej) => {
-          const req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).count();
-          req.onsuccess = () => res(req.result);
-          req.onerror = () => rej(req.error);
-        });
-        if (count === 0) {
-          const tx = db.transaction(STORE_NAME, 'readwrite');
-          const store = tx.objectStore(STORE_NAME);
-          records.forEach(r => store.put(r));
-          await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-        }
-      }
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-      console.error('Migration error:', e);
-    }
-  }
-
-  async function getRecords() {
-    const db = await initDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const req = tx.objectStore(STORE_NAME).getAll();
-      req.onsuccess = () => {
-        const list = req.result || [];
-        list.sort((a, b) => {
-          const dateA = a.date || '';
-          const dateB = b.date || '';
-          if (dateA === dateB) return (b.createdAt || '').localeCompare(a.createdAt || '');
-          return dateB.localeCompare(dateA);
-        });
-        resolve(list);
-      };
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  async function saveRecord(record) {
-    const db = await initDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).put(record);
-      tx.oncomplete = resolve;
-      tx.onerror = () => reject(tx.error);
-    });
-  }
-
-  async function updateRecord(id, data) {
-    const db = await initDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.get(id);
-      req.onsuccess = () => {
-        if (req.result) store.put({ ...req.result, ...data });
-      };
-      tx.oncomplete = resolve;
-      tx.onerror = () => reject(tx.error);
-    });
-  }
-
-  async function deleteRecord(id) {
-    const db = await initDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).delete(id);
-      tx.oncomplete = async () => { await renderList(); resolve(); };
-      tx.onerror = () => reject(tx.error);
-    });
-  }
-
-  async function clearAllRecords() {
-    const db = await initDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).clear();
-      tx.oncomplete = resolve;
-      tx.onerror = () => reject(tx.error);
-    });
+  function deleteRecord(id) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(getRecords().filter(r => r.id !== id)));
+    renderList();
   }
 
   function hasActiveListFilters() {
@@ -534,8 +433,8 @@
   }
 
   // --- Render List ---
-  async function renderList() {
-    let records = await getRecords();
+  function renderList() {
+    let records = getRecords();
 
     // 1. Populate Year Select (Advanced Filter)
     const allRecords = getRecords();
@@ -616,10 +515,8 @@
             <span class="accordion-arrow">${isOpen ? '▼' : '▶'}</span>
           </button>
           <div class="accordion-body ${isOpen ? 'open' : ''}" data-year="${year}">
-            <div class="accordion-body-inner">
-              ${chipsHtml}
-              <div class="record-list" data-year="${year}">${grouped[year].map(r => buildCard(r)).join('')}</div>
-            </div>
+            ${chipsHtml}
+            <div class="record-list" data-year="${year}">${grouped[year].map(r => buildCard(r)).join('')}</div>
           </div>
         </div>`;
     }).join('');
@@ -664,14 +561,13 @@
     }));
 
     accordionContainer.querySelectorAll('.card-s-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const type = btn.dataset.type, prop = type === 'fav' ? 'favorite' : type;
-        const records = await getRecords();
-    const r = records.find(x => x.id === btn.dataset.id);
+        const r = getRecords().find(x => x.id === btn.dataset.id);
         if (!r) return;
         r[prop] = !r[prop];
-        await updateRecord(r.id, r);
+        updateRecord(r.id, r);
         if (type === 'fav') {
           btn.textContent = '❤️';
           btn.classList.toggle('on', r[prop]);
@@ -747,9 +643,8 @@
   }
 
   // --- Modal ---
-  async function openDetail(id) {
-    const records = await getRecords();
-    const r = records.find(rec => rec.id === id);
+  function openDetail(id) {
+    const r = getRecords().find(rec => rec.id === id);
     if (!r) return;
 
     let photosHtml = '';
@@ -783,20 +678,20 @@
       </div>`;
 
     ['fav', 'sakura', 'yamaguchi'].forEach(type => {
-      document.getElementById(`modal-${type}`).addEventListener('click', async (e) => {
+      document.getElementById(`modal-${type}`).addEventListener('click', (e) => {
         const btn = e.currentTarget;
         const prop = type === 'fav' ? 'favorite' : type;
         r[prop] = !r[prop];
-        await updateRecord(r.id, r);
+        updateRecord(r.id, r);
         if (type === 'fav') btn.textContent = r.favorite ? '❤️' : '🤍';
         else { btn.classList.toggle('on', r[prop]); btn.classList.toggle('off', !r[prop]); }
-        await renderList(); // back list update
+        renderList(); // back list update
       });
     });
 
     document.getElementById('modal-edit').addEventListener('click', () => startEdit(r.id));
-    document.getElementById('modal-delete').addEventListener('click', async () => {
-      if (confirm('この記録を削除しますか？')) { closeModal(); await deleteRecord(r.id); showToast('🗑 削除しました'); }
+    document.getElementById('modal-delete').addEventListener('click', () => {
+      if (confirm('この記録を削除しますか？')) { closeModal(); deleteRecord(r.id); showToast('🗑 削除しました'); }
     });
 
     modalOverlay.classList.add('show');
@@ -832,8 +727,8 @@
   function closeModal() { modalOverlay.classList.remove('show'); document.body.style.overflow = ''; }
   function closeDataModal() { dataModalOverlay.classList.remove('show'); document.body.style.overflow = ''; }
 
-  async function exportData() {
-    const records = await getRecords();
+  function exportData() {
+    const records = getRecords();
     const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -849,17 +744,14 @@
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (ev) => {
+    reader.onload = (ev) => {
       try {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data)) throw new Error();
         if (!confirm(`${data.length}件のデータをインポートします。現在のデータは上書きされます。よろしいですか？`)) return;
-        await clearAllRecords();
-        for (const record of data) {
-          await saveRecord(record);
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         closeDataModal();
-        await renderList();
+        renderList();
         showToast(`📥 ${data.length}件をインポートしました`);
       } catch {
         showToast('⚠️ ファイルが正しくありません');
@@ -895,7 +787,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.4.2';
+      const currentVersion = 'v1.3.2';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
