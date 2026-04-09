@@ -807,6 +807,7 @@
 
     modalOverlay.classList.add('show');
     document.body.style.overflow = 'hidden';
+    document.getElementById('detail-modal').scrollTop = 0; // Reset scroll to top
 
     // 画面が表示（offsetWidthが確定）してから初期化
     setTimeout(() => {
@@ -906,7 +907,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.4.3';
+      const currentVersion = 'v1.4.4';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {

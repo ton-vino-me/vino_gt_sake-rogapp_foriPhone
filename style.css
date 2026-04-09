@@ -168,28 +168,33 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-glass);
+  padding: 11px 16px;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
   color: var(--text-muted);
   font-family: inherit;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 12px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.25s ease;
   -webkit-tap-highlight-color: transparent;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .tab-btn.active {
   background: linear-gradient(135deg, var(--blue), var(--purple));
-  border-color: transparent;
   color: #fff;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  transform: translateY(-1px);
+}
+
+.tab-btn:active {
+  transform: scale(0.96) translateY(0);
 }
 
 .tab-icon {
