@@ -4,7 +4,7 @@
    バージョンを変更することで、全ユーザーの更新を促せます
    ======================================== */
 
-const CACHE_NAME = 'sake-log-cache-v1.4.4';
+const CACHE_NAME = 'sake-log-cache-v1.4.5';
 const ASSETS = [
   './',
   './index.html',
