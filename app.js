@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.4.5';
+  const APP_VERSION = 'v1.4.6';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
@@ -852,7 +852,7 @@
     a.download = `酒ログ_バックアップ_${date}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('📤 エクスポートしました');
+    showToast('📤 端末の”ファイル”に保存されたことをご確認ください');
   }
 
   function importData(e) {
