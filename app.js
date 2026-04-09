@@ -7,6 +7,9 @@
 (function () {
   'use strict';
 
+  // --- App Version ---
+  const APP_VERSION = 'v1.4.5';
+
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
 
@@ -240,7 +243,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.4.5';
+        const currentVersion = APP_VERSION;
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -899,6 +902,10 @@
   function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // バージョン表示の自動反映
+      const badge = document.getElementById('app-version-badge');
+      if (badge) badge.textContent = APP_VERSION;
+
       init();
       initServiceWorker();
       checkAndShowUpdateLog();
@@ -907,7 +914,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.4.5';
+      const currentVersion = APP_VERSION;
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
