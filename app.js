@@ -240,7 +240,7 @@
         const response = await fetch('./changelog.json');
         if (!response.ok) throw new Error('Failed to fetch');
         const changelog = await response.json();
-        const currentVersion = 'v1.4.0';
+        const currentVersion = 'v1.4.1';
         if (!changelog[currentVersion]) {
           showToast('⚠️ バージョン情報が見つかりません');
           return;
@@ -254,18 +254,18 @@
 
     // --- Filters ---
 
-    filterFavBtn.addEventListener('click', () => {
+    filterFavBtn.addEventListener('click', async () => {
       filterFavActive = !filterFavActive;
       filterFavBtn.classList.toggle('active', filterFavActive);
       document.getElementById('filter-fav-icon').textContent = filterFavActive ? '❤️' : '🤍';
       await renderList();
     });
-    filterSakuraBtn.addEventListener('click', () => {
+    filterSakuraBtn.addEventListener('click', async () => {
       filterSakuraActive = !filterSakuraActive;
       filterSakuraBtn.classList.toggle('active', filterSakuraActive);
       await renderList();
     });
-    filterYamaguchiBtn.addEventListener('click', () => {
+    filterYamaguchiBtn.addEventListener('click', async () => {
       filterYamaguchiActive = !filterYamaguchiActive;
       filterYamaguchiBtn.classList.toggle('active', filterYamaguchiActive);
       await renderList();
@@ -669,7 +669,7 @@
     const r = records.find(x => x.id === btn.dataset.id);
         if (!r) return;
         r[prop] = !r[prop];
-        await await updateRecord(r.id, r);
+        await updateRecord(r.id, r);
         if (type === 'fav') {
           btn.textContent = '❤️';
           btn.classList.toggle('on', r[prop]);
@@ -785,7 +785,7 @@
         const btn = e.currentTarget;
         const prop = type === 'fav' ? 'favorite' : type;
         r[prop] = !r[prop];
-        await await updateRecord(r.id, r);
+        await updateRecord(r.id, r);
         if (type === 'fav') btn.textContent = r.favorite ? '❤️' : '🤍';
         else { btn.classList.toggle('on', r[prop]); btn.classList.toggle('off', !r[prop]); }
         await renderList(); // back list update
@@ -893,7 +893,7 @@
     // --- Update Log Display ---
     async function checkAndShowUpdateLog() {
       const LAST_VERSION_KEY = 'sake_log_last_version';
-      const currentVersion = 'v1.4.0';
+      const currentVersion = 'v1.4.1';
       const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
 
       if (lastVersion && lastVersion !== currentVersion) {
