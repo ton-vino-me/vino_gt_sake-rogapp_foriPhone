@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.4.6';
+  const APP_VERSION = 'v1.4.7';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
@@ -766,7 +766,7 @@
       const slides = r.photos.map((src, i) => `<div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}"><img src="${src}"></div>`).join('');
       const dots = r.photos.length > 1 ? `<div class="carousel-dots">${r.photos.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`).join('')}</div>` : '';
       const counter = r.photos.length > 1 ? `<span class="carousel-counter">1 / ${r.photos.length}</span>` : '';
-      photosHtml = `<div class="carousel" data-total="${r.photos.length}"><div class="carousel-track">${slides}</div>${counter}${dots}</div>`;
+      photosHtml = `<div class="carousel" data-total="${r.photos.length}"><div class="carousel-viewport"><div class="carousel-track">${slides}</div></div>${counter}${dots}</div>`;
     }
 
     modalContent.innerHTML = `
@@ -820,23 +820,24 @@
 
   // --- Carousel / Helpers ---
   function initCarousel() {
-    const c = modalContent.querySelector('.carousel'); if (!c) return;
-    const t = c.querySelector('.carousel-track'), tot = parseInt(c.dataset.total, 10); if (tot <= 1) return;
+    const parent = modalContent.querySelector('.carousel'); if (!parent) return;
+    const v = parent.querySelector('.carousel-viewport'); if (!v) return;
+    const tot = parseInt(parent.dataset.total, 10); if (tot <= 1) return;
     let cur = 0;
     function updateUI(idx) {
       cur = idx;
-      c.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
-      const cnt = c.querySelector('.carousel-counter'); if (cnt) cnt.textContent = `${cur + 1} / ${tot}`;
+      parent.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+      const cnt = parent.querySelector('.carousel-counter'); if (cnt) cnt.textContent = `${cur + 1} / ${tot}`;
     }
-    c.addEventListener('scroll', () => {
-      const idx = Math.round(c.scrollLeft / c.offsetWidth);
+    v.addEventListener('scroll', () => {
+      const idx = Math.round(v.scrollLeft / v.offsetWidth);
       if (idx !== cur) updateUI(idx);
     }, { passive: true });
     function goTo(idx) {
       const targetIdx = Math.max(0, Math.min(tot - 1, idx));
-      c.scrollTo({ left: targetIdx * c.offsetWidth, behavior: 'smooth' });
+      v.scrollTo({ left: targetIdx * v.offsetWidth, behavior: 'smooth' });
     }
-    c.querySelectorAll('.carousel-dot').forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.index, 10))));
+    parent.querySelectorAll('.carousel-dot').forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.index, 10))));
   }
 
   function closeModal() { modalOverlay.classList.remove('show'); document.body.style.overflow = ''; }

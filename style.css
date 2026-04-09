@@ -956,6 +956,10 @@ input[type="date"] {
   position: relative;
   width: 100%;
   margin-bottom: 12px;
+}
+
+.carousel-viewport {
+  width: 100%;
   border-radius: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -965,7 +969,7 @@ input[type="date"] {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.carousel::-webkit-scrollbar {
+.carousel-viewport::-webkit-scrollbar {
   display: none;
 }
 
