@@ -445,7 +445,7 @@ input[type="date"] {
   gap: 4px;
   padding: 10px 6px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
   font-family: inherit;
@@ -454,13 +454,18 @@ input[type="date"] {
   cursor: pointer;
   transition: var(--transition);
   -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .temp-btn.selected {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(167, 139, 250, 0.1));
-  border-color: var(--blue);
-  color: var(--blue);
-  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.12);
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateY(-1px);
 }
 
 .temp-btn:active {
@@ -489,20 +494,24 @@ input[type="date"] {
   gap: 2px;
   padding: 8px 14px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: 100px;
   font-size: 0.8rem;
   color: var(--text-muted);
   transition: var(--transition);
   white-space: nowrap;
   user-select: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .taste-tag input:checked + .tag-chip {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(167, 139, 250, 0.12));
-  border-color: var(--purple);
-  color: var(--purple-dark);
-  box-shadow: 0 2px 12px rgba(167, 139, 250, 0.12);
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .taste-tag:active .tag-chip {
@@ -1166,7 +1175,7 @@ input[type="date"] {
   gap: 4px;
   padding: 10px 6px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 0.72rem;
@@ -1175,12 +1184,18 @@ input[type="date"] {
   cursor: pointer;
   transition: var(--transition);
   -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .special-tag-btn.active {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), rgba(251, 113, 133, 0.08));
-  border-color: rgba(244, 114, 182, 0.35);
-  color: #e11d48;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateY(-1px);
 }
 
 .special-tag-btn:not(.active) .disable-emoji {
@@ -1238,7 +1253,7 @@ input[type="date"] {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: none;
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 0.85rem;
@@ -1246,14 +1261,13 @@ input[type="date"] {
   transition: var(--transition);
   -webkit-appearance: none;
   appearance: none;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 .filter-expand-btn {
@@ -1265,12 +1279,12 @@ input[type="date"] {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition);
   font-size: 1.1rem;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
@@ -1299,20 +1313,22 @@ input[type="date"] {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: none;
   border-radius: var(--radius-sm);
   font-size: 1rem;
   cursor: pointer;
   transition: var(--transition);
   -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), var(--shadow-card);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .filter-special-btn.active {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(251, 113, 133, 0.08));
-  border-color: rgba(244, 114, 182, 0.4);
-  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.15);
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .filter-special-btn:not(.active) .disable-emoji {
@@ -1342,9 +1358,9 @@ input[type="date"] {
   max-height: 500px;
   margin-bottom: 16px;
   padding: 16px;
-  border: 1.5px solid var(--border);
+  border: none;
   opacity: 1;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.12);
 }
 
 .adv-filter-section {
@@ -1382,20 +1398,25 @@ input[type="date"] {
   flex-shrink: 0;
   padding: 6px 14px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: 100px;
   font-size: 0.8rem;
   color: var(--text-body);
   cursor: pointer;
   transition: var(--transition);
   white-space: nowrap;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .chip.active {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   color: #fff;
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateY(-1px);
 }
 
 /* --- Advanced Filter Select Row --- */
@@ -1411,20 +1432,21 @@ input[type="date"] {
   height: 34px;
   padding: 6px 12px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: 100px;
   font-family: inherit;
   font-size: 0.8rem;
   color: var(--text-body);
   outline: none;
   appearance: none;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .adv-select:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 /* Rating Filter */
@@ -1437,18 +1459,23 @@ input[type="date"] {
 .rating-filter-chip {
   padding: 6px 14px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid var(--border);
+  border: none;
   border-radius: 100px;
   font-size: 0.8rem;
   color: var(--text-body);
   cursor: pointer;
   transition: var(--transition);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .rating-filter-chip.active {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   color: #fff;
-  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .rating-stars-filter {
@@ -1587,8 +1614,8 @@ input[type="date"] {
   flex-shrink: 0;
   padding: 4px 12px;
   border-radius: 100px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
@@ -1596,13 +1623,17 @@ input[type="date"] {
   transition: min-width 0.2s, background 0.2s, color 0.2s;
   -webkit-tap-highlight-color: transparent;
   line-height: 1.4;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .month-chip.active {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   color: #fff;
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .month-chip:active {
