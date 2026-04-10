@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.4.8';
+  const APP_VERSION = 'v1.4.9';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
@@ -277,6 +277,13 @@
 
   // --- Tab Switching ---
   async function switchTab(tab) {
+    if (editingId && tab !== 'form') {
+      if (!confirm('編集内容を破棄しますか？')) {
+        return;
+      }
+      resetForm();
+    }
+
     tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
     if (tab === 'form') {
       screenForm.classList.add('active');
