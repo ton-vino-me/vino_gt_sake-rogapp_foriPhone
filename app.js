@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.5.0';
+  const APP_VERSION = 'v1.5.1';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
@@ -781,7 +781,7 @@
         <button class="modal-s-btn" id="modal-fav" data-id="${r.id}">${r.favorite ? '❤️' : '🤍'}</button>
         <button class="modal-s-btn ${r.sakura ? 'on' : 'off'}" id="modal-sakura" data-id="${r.id}">🌸</button>
         <button class="modal-s-btn ${r.yamaguchi ? 'on' : 'off'}" id="modal-yamaguchi" data-id="${r.id}">🐡</button>
-        <div class="card-rating" style="margin-left:auto;font-size:1.5rem;">${Array.from({length: 5}, (_, i) => {
+        <div class="card-rating modal-rating" style="margin-left:auto;">${Array.from({length: 5}, (_, i) => {
           const isActive = i < (r.rating || 0);
           return `<span class="rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
         }).join('')}</div>

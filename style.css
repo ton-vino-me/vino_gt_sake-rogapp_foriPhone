@@ -400,11 +400,18 @@ input[type="date"] {
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #e0e0e0;
-  transition: all 0.2s ease;
+  color: transparent;
   -webkit-tap-highlight-color: transparent;
   padding: 0;
   line-height: 1;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: #e0e0e0;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.4 3.7Q12 2 12.6 3.7L14.4 8.8 19.7 8.9Q21.5 8.9 20.1 10L15.8 13.2 17.4 18.4Q17.9 20.1 16.4 19.1L12 16 7.6 19.1Q6.1 20.1 6.6 18.4L8.2 13.2 3.9 10Q2.5 8.9 4.3 8.9L9.6 8.8Z' fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.4 3.7Q12 2 12.6 3.7L14.4 8.8 19.7 8.9Q21.5 8.9 20.1 10L15.8 13.2 17.4 18.4Q17.9 20.1 16.4 19.1L12 16 7.6 19.1Q6.1 20.1 6.6 18.4L8.2 13.2 3.9 10Q2.5 8.9 4.3 8.9L9.6 8.8Z' fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  vertical-align: middle;
 }
 
 .rating-star:active {
@@ -412,23 +419,23 @@ input[type="date"] {
 }
 
 .rating-star.active[data-value="1"] {
-  color: #38bdf8;
+  background-color: #38bdf8;
 }
 
 .rating-star.active[data-value="2"] {
-  color: #60a5fa;
+  background-color: #60a5fa;
 }
 
 .rating-star.active[data-value="3"] {
-  color: #818cf8;
+  background-color: #818cf8;
 }
 
 .rating-star.active[data-value="4"] {
-  color: #a78bfa;
+  background-color: #a78bfa;
 }
 
 .rating-star.active[data-value="5"] {
-  color: #a855f7;
+  background-color: #a855f7;
 }
 
 /* --- Temperature Buttons --- */
@@ -723,32 +730,22 @@ input[type="date"] {
   line-height: 1;
 }
 
-.card-rating-star {
-  line-height: 1;
+/* Card / Modal — 表示専用の★（サイズを明示的に指定） */
+.card-rating .rating-star {
+  font-size: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  cursor: default;
+  padding: 0;
 }
 
-.card-rating-star:not(.active) {
-  color: #e0e0e0;
+.card-rating .rating-star:active {
+  transform: none;
 }
 
-.card-rating-star[data-value="1"].active {
-  color: #38bdf8;
-}
-
-.card-rating-star[data-value="2"].active {
-  color: #60a5fa;
-}
-
-.card-rating-star[data-value="3"].active {
-  color: #818cf8;
-}
-
-.card-rating-star[data-value="4"].active {
-  color: #a78bfa;
-}
-
-.card-rating-star[data-value="5"].active {
-  color: #a855f7;
+.modal-rating .rating-star {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .card-meta {
@@ -1483,25 +1480,10 @@ input[type="date"] {
   gap: 2px;
 }
 
-.rating-star-btn {
-  background: none;
-  border: none;
+/* Filter — 絞り込みパネル内の★ */
+.rating-stars-filter .rating-star {
   font-size: 1.6rem;
-  color: #e0e0e0;
-  cursor: pointer;
   padding: 0 1px;
-  transition: transform 0.2s, color 0.2s;
-  line-height: 1;
-}
-
-.rating-star-btn.active[data-rating="1"] { color: #38bdf8; }
-.rating-star-btn.active[data-rating="2"] { color: #60a5fa; }
-.rating-star-btn.active[data-rating="3"] { color: #818cf8; }
-.rating-star-btn.active[data-rating="4"] { color: #a78bfa; }
-.rating-star-btn.active[data-rating="5"] { color: #a855f7; }
-
-.rating-star-btn:active {
-  transform: scale(1.2);
 }
 
 .rating-filter-suffix {
