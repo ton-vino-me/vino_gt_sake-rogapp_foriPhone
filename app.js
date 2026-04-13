@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.5.1';
+  const APP_VERSION = 'v1.5.2';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
