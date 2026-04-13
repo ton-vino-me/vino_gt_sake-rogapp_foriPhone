@@ -8,7 +8,7 @@
   'use strict';
 
   // --- App Version ---
-  const APP_VERSION = 'v1.4.9';
+  const APP_VERSION = 'v1.5.0';
 
   // --- Storage Key ---
   const STORAGE_KEY = 'sake_log_records';
@@ -211,14 +211,14 @@
       });
     }
 
-    ratingFilterGroup.querySelectorAll('.rating-filter-chip, .rating-star-btn').forEach(btn => {
+    ratingFilterGroup.querySelectorAll('.rating-filter-chip, .rating-star').forEach(btn => {
       btn.addEventListener('click', () => {
-        const val = parseInt(btn.dataset.rating, 10);
+        const val = parseInt(btn.dataset.value, 10);
         selectedMinRating = val;
         
         // Update UI
         ratingFilterGroup.querySelector('.rating-filter-chip').classList.toggle('active', val === 0);
-        ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach((star, i) => {
+        ratingFilterGroup.querySelectorAll('.rating-star').forEach((star, i) => {
           star.classList.toggle('active', i < val);
         });
         renderList();
@@ -714,7 +714,7 @@
     if (monthAllBtn) monthAllBtn.classList.add('active');
     if (monthSelect) monthSelect.value = '';
     ratingFilterGroup.querySelector('.rating-filter-chip').classList.add('active');
-    ratingFilterGroup.querySelectorAll('.rating-star-btn').forEach(s => s.classList.remove('active'));
+    ratingFilterGroup.querySelectorAll('.rating-star').forEach(s => s.classList.remove('active'));
     filterFavBtn.classList.remove('active');
     filterFavBtn.querySelector('span').textContent = '🤍';
     filterSakuraBtn.classList.add('inactive');
@@ -742,7 +742,7 @@
 
     const rating = `<div class="card-rating">${Array.from({length: 5}, (_, i) => {
       const isActive = i < (r.rating || 0);
-      return `<span class="card-rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
+      return `<span class="rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
     }).join('')}</div>`;
     const temp = r.temp ? `<span class="card-temp">${getTempEmoji(r.temp)} ${r.temp}</span>` : '';
     const rawTags = r.tags || [];
@@ -783,7 +783,7 @@
         <button class="modal-s-btn ${r.yamaguchi ? 'on' : 'off'}" id="modal-yamaguchi" data-id="${r.id}">🐡</button>
         <div class="card-rating" style="margin-left:auto;font-size:1.5rem;">${Array.from({length: 5}, (_, i) => {
           const isActive = i < (r.rating || 0);
-          return `<span class="card-rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
+          return `<span class="rating-star ${isActive ? 'active' : ''}" data-value="${i+1}">★</span>`;
         }).join('')}</div>
       </div>
       <h2 class="modal-name">${escapeHtml(r.name)}</h2>
